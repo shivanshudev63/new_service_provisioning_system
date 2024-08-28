@@ -1,8 +1,6 @@
-import sequelize from './sequelize.js'; // This is where your Sequelize instance is created
-import User from './models/User.js'; // Import your Sequelize models
-
-// Sync all models with the database
-sequelize.sync({ force: false }) // Use { force: true } to drop and recreate tables
+import sequelize from './sequelize.js'; 
+import User from './models/User.js'; 
+sequelize.sync({ force: false }) 
   .then(() => {
     console.log("Database synced successfully.");
   })
