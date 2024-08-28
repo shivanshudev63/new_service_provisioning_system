@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-const Login = () => {
 
-  const [formData, setFormData] = useState({
-    email: '',
-    password: ''
-  });
+const Login = () => {
+  const [formData, setFormData] = useState({ email: '', password: '' });
+  const navigate = useNavigate();
+  
+  axios.defaults.withCredentials = true;
 
   const handleChange = (event) => {
     setFormData({
@@ -16,46 +15,45 @@ const Login = () => {
     });
   };
 
-const navigate=useNavigate()
-axios.defaults.withCredentials=true;
   const handleSubmit = (event) => {
     event.preventDefault();
-   axios.post('http://localhost:8081/login',formData)
-   .then(res=>{
-    if(res.data.Status==="Success"){
-navigate('/')
-    }else{
-      alert(res.data.Error);
-    }
-   })
-   .then(err=>console.log(err));
+    axios.post('http://localhost:8081/login', formData)
+      .then(res => {
+        if (res.data.Status === "Success") {
+          if (res.data.role === 'admin') {
+            navigate('/adminhome'); // Redirect to admin home page
+          } else {
+            navigate('/'); // Redirect to customer home page
+          }
+        } else {
+          alert(res.data.Error);
+        }
+      })
+      .catch(err => console.log(err));
   };
+
   return (
     <form onSubmit={handleSubmit}>
-  
-
-  <div>
+      <div>
         <label>Email:</label>
         <input 
           type="email" 
           name="email" 
           value={formData.email} 
-          onChange={e=>setFormData({...formData,email:e.target.value})} 
+          onChange={handleChange} 
           required 
         />
       </div>
-
       <div>
         <label>Password:</label>
         <input 
           type="password" 
           name="password" 
           value={formData.password} 
-          onChange={e=>setFormData({...formData,password:e.target.value})} 
+          onChange={handleChange} 
           required 
         />
       </div>
-
       <button type="submit">Login</button>
       <Link to="/register">
         <button>Create Account</button>
