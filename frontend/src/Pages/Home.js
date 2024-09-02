@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from 'axios';
 import { useLocation } from "react-router-dom";
+
 const Home = () => {
   const [auth, setAuth] = useState(false);
   const [message, setMessage] = useState('');
@@ -13,31 +14,34 @@ const Home = () => {
   // Extract customer_id from query parameters
   const queryParams = new URLSearchParams(location.search);
   const customer_id = queryParams.get('customer_id');
+
   axios.defaults.withCredentials = true;
 
   useEffect(() => {
+    // Fetch the authentication status and user details
     axios.get('http://localhost:8081')
       .then(res => {
         if (res.data.Status === "Success") {
           setAuth(true);
           setName(res.data.name);
-          // if (res.data.role === "customer") {
-          //   // Fetch customer ID and customer-specific data
-          //   axios.get(`http://localhost:8081/customer/${customer_id}`)
-          //     .then(customerRes => {
-          //       if (customerRes.data) {
-          //         setCustomerId(customerRes.data);
-          //       }
-          //     })
-          //     .catch(err => console.log("Error fetching customer details:", err));
-          // }
+
+          // Fetch customer-specific data using the customer_id
+          if (customer_id) {
+            axios.get(`http://localhost:8081/customer/${customer_id}`)
+              .then(customerRes => {
+                if (customerRes.data) {
+                  setCustomerDetails(customerRes.data);
+                }
+              })
+              .catch(err => console.log("Error fetching customer details:", err));
+          }
         } else {
           setAuth(false);
           setMessage(res.data.Error);
         }
       })
       .catch(err => console.log(err));
-  }, []);
+  }, [customer_id]);
 
   const handleLogout = () => {
     axios.get('http://localhost:8081/logout')
@@ -63,21 +67,20 @@ const Home = () => {
   const handleTerminateService = () => {
     navigate(`/terminate-service?customer_id=${customer_id}`);
   };
-  
 
   return (
     <div>
       {auth ? (
         <div>
           <h3>Welcome, {name}</h3>
-          {customerDetails && (
+          {customerDetails ? (
             <div>
               <h4>Your Services</h4>
               {customerDetails.services_enrolled && customerDetails.services_enrolled.length > 0 ? (
                 customerDetails.services_enrolled.map(service => (
                   <div key={service.service_name}>
                     <h5>{service.service_name}</h5>
-                    <p>Plan: {service.plan}</p>
+                    <p>Plan: {service.plan_name}</p> {/* Use plan_name instead of plan */}
                     <p>Features: {service.features}</p>
                   </div>
                 ))
@@ -85,6 +88,8 @@ const Home = () => {
                 <p>No services enrolled.</p>
               )}
             </div>
+          ) : (
+            <p>Loading customer details...</p>
           )}
           <button onClick={handleEnrollService}>Enroll in a Service</button>
           <button onClick={handleConfigureService}>Configure Services</button>

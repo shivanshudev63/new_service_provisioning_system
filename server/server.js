@@ -337,18 +337,19 @@ app.post('/customer-service/enroll', verifyUser, async (req, res) => {
       const selectedPlan = await Plan.findOne({
         where: {
           service_id: service_id,
-          plan_name: plan,
+          plan_name: plan, // Use plan_name instead of plan
         },
       });
-  
+  console.log(selectedPlan);
       if (!service || !selectedPlan) {
         return res.status(404).json({ Error: 'Service or Plan not found' });
       }
   
-      // Create a new entry in CustomerServices
-      await CustomerService .create({
+      await CustomerService.create({
         customer_id: customer_id,
-        service_id: service_id // Assuming plan_id exists in your model
+        service_id: service_id,
+        plan_name: plan, // Include the plan_name in the creation
+        features: selectedPlan.features, // Assuming you want to store the features from the plan
       });
   
       return res.json({ Status: 'Success', Message: 'Service enrolled successfully' });
@@ -357,9 +358,52 @@ app.post('/customer-service/enroll', verifyUser, async (req, res) => {
       return res.status(500).json({ Error: 'Error enrolling service' });
     }
   });
+
+
+  //Customer services fetch:
+  app.get('/customer/:customer_id', async (req, res) => {
+    try {
+        const { customer_id } = req.params;
+
+        // Fetch the customer details from the User table
+        const customer = await User.findOne({
+            where: { id: customer_id, role: 'customer' },
+            attributes: ['id', 'name', 'email'] // Include fields as needed
+        });
+
+        if (!customer) {
+            return res.status(404).json({ Error: 'Customer not found' });
+        }
+
+        // Fetch the services the customer is enrolled in from CustomerService table
+        const services = await CustomerService.findAll({
+            where: { customer_id: customer_id },
+            include: [{
+                model: Service,
+                attributes: ['service_name'], // Include service name from the Service table
+            }],
+            attributes: ['plan_name', 'features'] // Include plan and features from CustomerService table
+        });
+
+        // Format the response data
+        const responseData = {
+            id: customer.id,
+            name: customer.name,
+            email: customer.email,
+            services_enrolled: services.map(service => ({
+                service_name: service.Service.service_name,
+                plan: service.plan_name,
+                features: service.features,
+            }))
+        };
+
+        return res.json(responseData);
+    } catch (err) {
+        console.error('Error fetching customer details:', err);
+        return res.status(500).json({ Error: 'Error fetching customer details' });
+    }
+});
   
-
-
 
 
 

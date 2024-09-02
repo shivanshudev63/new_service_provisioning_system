@@ -71,17 +71,17 @@ const Configure = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    const newService = {
+    const newService = {    
       customer_id: customer_id,
       service_id: selectedService,
       plan: selectedPlan,
     };
-
+console.log(newService);
     axios.post('http://localhost:8081/customer-service/enroll', newService)
       .then(res => {
         if (res.data.Status === "Success") {
           alert('Service enrolled successfully!');
-          navigate(`/home?customer_id=${customer_id}`);
+          navigate(`/?customer_id=${customer_id}`);
         } else {
           alert('Failed to enroll service.');
         }
