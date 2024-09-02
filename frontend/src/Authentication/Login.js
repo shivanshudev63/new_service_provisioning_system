@@ -18,12 +18,14 @@ const Login = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
     axios.post('http://localhost:8081/login', formData)
-      .then(res => {
+      .then(res => {    
+        console.log(res.data)
         if (res.data.Status === "Success") {
           if (res.data.role === 'admin') {
             navigate('/adminhome'); // Redirect to admin home page
           } else {
-            navigate('/'); // Redirect to customer home page
+            
+            navigate(`/?customer_id=${res.data.id}`); // Redirect to customer home page
           }
         } else {
           alert(res.data.Error);

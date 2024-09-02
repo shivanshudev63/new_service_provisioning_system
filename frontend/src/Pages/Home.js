@@ -1,14 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from 'axios';
-
+import { useLocation } from "react-router-dom";
 const Home = () => {
   const [auth, setAuth] = useState(false);
   const [message, setMessage] = useState('');
   const [name, setName] = useState('');
   const [customerDetails, setCustomerDetails] = useState(null);
   const navigate = useNavigate();
-
+  const location = useLocation();
+  
+  // Extract customer_id from query parameters
+  const queryParams = new URLSearchParams(location.search);
+  const customer_id = queryParams.get('customer_id');
   axios.defaults.withCredentials = true;
 
   useEffect(() => {
@@ -17,15 +21,16 @@ const Home = () => {
         if (res.data.Status === "Success") {
           setAuth(true);
           setName(res.data.name);
-
-          // Fetch customer-specific data if the user is a customer
-          axios.get(`http://localhost:8081/customer/${res.data.customer_id}`)
-            .then(customerRes => {
-              if (customerRes.data) {
-                setCustomerDetails(customerRes.data);
-              }
-            })
-            .catch(err => console.log("Error fetching customer details:", err));
+          // if (res.data.role === "customer") {
+          //   // Fetch customer ID and customer-specific data
+          //   axios.get(`http://localhost:8081/customer/${customer_id}`)
+          //     .then(customerRes => {
+          //       if (customerRes.data) {
+          //         setCustomerId(customerRes.data);
+          //       }
+          //     })
+          //     .catch(err => console.log("Error fetching customer details:", err));
+          // }
         } else {
           setAuth(false);
           setMessage(res.data.Error);
@@ -47,6 +52,19 @@ const Home = () => {
       .catch(err => console.log(err));
   };
 
+  const handleEnrollService = () => {
+    navigate(`/enroll-service?customer_id=${customer_id}`);
+  };
+  
+  const handleConfigureService = () => {
+    navigate(`/configure-service?customer_id=${customer_id}`);
+  };
+  
+  const handleTerminateService = () => {
+    navigate(`/terminate-service?customer_id=${customer_id}`);
+  };
+  
+
   return (
     <div>
       {auth ? (
@@ -55,15 +73,22 @@ const Home = () => {
           {customerDetails && (
             <div>
               <h4>Your Services</h4>
-              {customerDetails.services_enrolled.map(service => (
-                <div key={service.service_name}>
-                  <h5>{service.service_name}</h5>
-                  <p>Plan: {service.plan}</p>
-                  <p>Features: {service.features}</p>
-                </div>
-              ))}
+              {customerDetails.services_enrolled && customerDetails.services_enrolled.length > 0 ? (
+                customerDetails.services_enrolled.map(service => (
+                  <div key={service.service_name}>
+                    <h5>{service.service_name}</h5>
+                    <p>Plan: {service.plan}</p>
+                    <p>Features: {service.features}</p>
+                  </div>
+                ))
+              ) : (
+                <p>No services enrolled.</p>
+              )}
             </div>
           )}
+          <button onClick={handleEnrollService}>Enroll in a Service</button>
+          <button onClick={handleConfigureService}>Configure Services</button>
+          <button onClick={handleTerminateService}>Terminate a Service</button>
           <button onClick={handleLogout}>Logout</button>
         </div>
       ) : (

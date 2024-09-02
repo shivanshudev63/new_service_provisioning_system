@@ -44,7 +44,7 @@ const CreateService = () => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        
+
         // Reset error state
         setError('');
 

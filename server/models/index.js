@@ -1,10 +1,12 @@
 import sequelize from '../sequelize.js';
-import Customer from './Customer.js';
+import User from './User.js';
 import Service from './Service.js';
 import Plan from './Plan.js';
-// Define the many-to-many relationship
-Customer.belongsToMany(Service, { through: 'CustomerService', foreignKey: 'customer_id' });
-Service.belongsToMany(Customer, { through: 'CustomerService', foreignKey: 'service_id' });
+import CustomerService from './CustomerService.js';
+
+// Define the many-to-many relationship using the User model
+User.belongsToMany(Service, { through: CustomerService, foreignKey: 'customer_id' });
+Service.belongsToMany(User, { through: CustomerService, foreignKey: 'service_id' });
 
 // Export the models
-export { sequelize, Customer, Service,Plan };
+export { sequelize, User, Service, Plan, CustomerService };

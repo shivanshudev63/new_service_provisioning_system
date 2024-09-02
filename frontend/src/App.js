@@ -5,6 +5,9 @@ import Register from './Authentication/Register';
 import Login from './Authentication/Login';
 import Logout from './Authentication/Logout';
 import AdminHome from './Pages/AdminHome';
+import Configure from './Pages/Configure';
+import Enroll from './Pages/Enroll';
+import Terminate from './Pages/Terminate'
 function App() {
   return (
     <BrowserRouter>
@@ -14,7 +17,9 @@ function App() {
         <Route path='/login' element={<Login />}></Route>
         <Route path='/logout' element={<Logout />}></Route>
         <Route path='/adminhome' element={<AdminHome />}></Route>
-
+        <Route path='/enroll-service' element={<Enroll />}></Route>
+        <Route path='/terminate-service' element={<Terminate />}></Route>
+        <Route path='/configure-service' element={<Configure />}></Route>
       </Routes>
     </BrowserRouter>
   );

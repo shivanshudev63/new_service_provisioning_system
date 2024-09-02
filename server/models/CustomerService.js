@@ -1,11 +1,13 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../sequelize.js';
+import User from './User.js'; // Import the User model
+import Service from './Service.js'; // Import the Service model
 
 const CustomerService = sequelize.define('CustomerService', {
     customer_id: {
         type: DataTypes.INTEGER,
         references: {
-            model: 'Customers',
+            model: User, // Reference the User model instead of Customers
             key: 'id',
         },
         primaryKey: true,
@@ -13,7 +15,7 @@ const CustomerService = sequelize.define('CustomerService', {
     service_id: {
         type: DataTypes.INTEGER,
         references: {
-            model: 'Services',
+            model: Service, // Reference the Service model
             key: 'id',
         },
         primaryKey: true,
@@ -29,5 +31,12 @@ const CustomerService = sequelize.define('CustomerService', {
 }, {
     timestamps: false // Disable createdAt and updatedAt
 });
+
+// Define the relationships
+User.hasMany(CustomerService, { foreignKey: 'customer_id' });   
+CustomerService.belongsTo(User, { foreignKey: 'customer_id' });
+
+Service.hasMany(CustomerService, { foreignKey: 'service_id' });
+CustomerService.belongsTo(Service, { foreignKey: 'service_id' });
 
 export default CustomerService;
