@@ -403,7 +403,70 @@ app.post('/customer-service/enroll', verifyUser, async (req, res) => {
         return res.status(500).json({ Error: 'Error fetching customer details' });
     }
 });
+
+
+// Get current plan for a specific customer and service
+app.get('/customer-service/:customer_id/service/:service_id', async (req, res) => {
+  const { customer_id, service_id } = req.params;
+  try {
+    const customerService = await CustomerService.findOne({
+      where: { customer_id, service_id }
+    });
+    if (customerService) {
+      res.json({ plan_name: customerService.plan_name });
+    } else {
+      res.status(404).json({ Error: 'Service not found for this customer' });
+    }
+  } catch (error) {
+    console.error('Error fetching current plan:', error);
+    res.status(500).json({ Error: 'Failed to fetch current plan' });
+  }
+});
+
+
+// Update the plan for a specific customer and service
+app.put('/customer-service/update', async (req, res) => {
+  const { customer_id, service_id, new_plan, features } = req.body;
+  try {
+    const [updated] = await CustomerService.update(
+      { features:features,plan_name: new_plan},
+      { where: { customer_id, service_id } }
+    );
+
+    if (updated === 1) {
+      res.json({ Status: 'Success' });
+    } else {  
+      res.status(400).json({ Status: 'Failed', Error: 'Update failed' });
+    }
+  } catch (error) {
+    console.error('Error updating service plan:', error);
+    res.status(500).json({ Error: 'Failed to update service plan' });
+  }
+});
+
   
+app.get('/plans/:planId/service/:serviceId', async (req, res) => {
+  try {
+    const { planId, serviceId } = req.params;
+
+    // Find the plan with the given planId
+    const plan = await Plan.findOne({ 
+      where: { plan_name: planId, service_id: serviceId }
+    });
+
+    console.log('Fetched Plan:', plan); // Log the fetched plan
+
+    if (!plan) {
+      return res.status(404).json({ message: 'Plan not found for the specified service' });
+    }
+
+    // Return the features of the plan
+    res.json({ features: plan.features });
+  } catch (err) {
+    console.error('Error fetching plan features:', err);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
 
 
 
