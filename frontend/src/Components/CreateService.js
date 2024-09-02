@@ -65,6 +65,7 @@ const CreateService = () => {
             alert('Service created successfully');
             setServiceName('');
             setPlans([{ plan_name: planTypes[0], features: '' }]);
+            
         } catch (err) {
             console.error("Error creating service:", err);
             alert('An error occurred while creating the service.');

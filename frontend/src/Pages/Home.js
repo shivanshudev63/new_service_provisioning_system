@@ -42,7 +42,7 @@ const Home = () => {
       })
       .catch(err => console.log(err));
   }, [customer_id]);
-
+  
   const handleLogout = () => {
     axios.get('http://localhost:8081/logout')
       .then(res => {
@@ -80,7 +80,7 @@ const Home = () => {
                 customerDetails.services_enrolled.map(service => (
                   <div key={service.service_name}>
                     <h5>{service.service_name}</h5>
-                    <p>Plan: {service.plan_name}</p> {/* Use plan_name instead of plan */}
+                    <p>Plan: {service.plan}</p> {/* Use plan_name instead of plan */}
                     <p>Features: {service.features}</p>
                   </div>
                 ))

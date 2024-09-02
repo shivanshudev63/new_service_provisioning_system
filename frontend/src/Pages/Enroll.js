@@ -33,8 +33,17 @@ const Configure = () => {
             .then(serviceRes => setServices(serviceRes.data))
             .catch(err => console.log("Error fetching services:", err));
 
-          axios.get('http://localhost:8081/plans')
-            .then(planRes => setPlans(planRes.data))
+            axios.get('http://localhost:8081/plans')
+            .then(planRes => {
+              // Filter out duplicate plans based on plan_name
+              const uniquePlans = planRes.data.reduce((acc, plan) => {
+                if (!acc.some(p => p.plan_name === plan.plan_name)) {
+                  acc.push(plan);
+                }
+                return acc;
+              }, []);
+              setPlans(uniquePlans);
+            })  
             .catch(err => console.log("Error fetching plans:", err));
 
         } else {
