@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import cookieParser from "cookie-parser";
 import User from "./models/User.js";
-import { sequelize, Service, Plan,CustomerService } from "./models/index.js";
+import { sequelize, Service, Plan,CustomerService,Archive } from "./models/index.js";
 const saltRounds = 10;
 
 const app = express();
@@ -382,7 +382,7 @@ app.post('/customer-service/enroll', verifyUser, async (req, res) => {
                 model: Service,
                 attributes: ['service_name'], // Include service name from the Service table
             }],
-            attributes: ['plan_name', 'features'] // Include plan and features from CustomerService table
+            attributes: ['plan_name', 'features','service_id'] // Include plan and features from CustomerService table
         });
 
         // Format the response data
@@ -391,6 +391,7 @@ app.post('/customer-service/enroll', verifyUser, async (req, res) => {
             name: customer.name,
             email: customer.email,
             services_enrolled: services.map(service => ({
+              service_id:service.service_id,
                 service_name: service.Service.service_name,
                 plan: service.plan_name,
                 features: service.features,
@@ -469,6 +470,52 @@ app.get('/plans/:planId/service/:serviceId', async (req, res) => {
 });
 
 
+//Termiate
+// Route to archive a service
+app.post('/archive', verifyUser, async (req, res) => {
+  try {
+    const { customer_id, service_id } = req.body;
+
+    // Find the service to archive
+    const service = await CustomerService.findOne({ where: { customer_id, service_id } });
+
+    if (!service) {
+      return res.status(404).json({ Error: 'Service not found for this customer' });
+    }
+
+    // Archive the service
+    await Archive.create({
+      customer_id: customer_id,
+      service_id: service_id,
+      plan_name: service.plan_name,
+      features: service.features,
+    });
+
+    return res.json({ Status: 'Service archived successfully' });
+  } catch (err) {
+    console.error('Error archiving service:', err);
+    return res.status(500).json({ Error: 'Error archiving service' });
+  }
+});
+
+// Route to delete a service from CustomerService table
+app.delete('/customer-services/:service_id', verifyUser, async (req, res) => {
+  try {
+    const { service_id } = req.params;
+
+    // Delete the service from CustomerService table
+    const deleted = await CustomerService.destroy({ where: { service_id:service_id } });
+
+    if (deleted) {
+      return res.json({ Status: 'Service deleted successfully' });
+    } else {
+      return res.status(404).json({ Error: 'Service not found' });
+    }
+  } catch (err) {
+    console.error('Error deleting service:', err);
+    return res.status(500).json({ Error: 'Error deleting service' });
+  }
+});
 
 
 app.listen(8081, () => {
