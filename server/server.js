@@ -358,8 +358,53 @@ app.post('/customer-service/enroll', verifyUser, async (req, res) => {
       return res.status(500).json({ Error: 'Error enrolling service' });
     }
   });
-
-
+  app.delete("/customer/:id", verifyUser, verifyAdmin, async (req, res) => {
+    try {
+      const { id } = req.params;
+  
+      // Move customer's services to archive
+      const customerServices = await CustomerService.findAll({ where: { customer_id: id } });
+      await Promise.all(customerServices.map(service =>
+        Archive.create({
+          customer_id: service.customer_id,
+          service_id: service.service_id,
+          plan_name: service.plan_name,
+          features: service.features
+        })
+      ));
+  
+      // Remove customer from User table
+      await User.destroy({ where: { id } });
+  
+      // Remove customer services
+      await CustomerService.destroy({ where: { customer_id: id } });
+  
+      res.json({ Status: "Customer removed successfully" });
+    } catch (err) {
+      console.error("Error removing customer:", err);
+      res.status(500).json({ Error: "Server error" });
+    }
+  });
+  
+  app.get("/customers", verifyUser, verifyAdmin, async (req, res) => {
+    try {
+      const customers = await User.findAll({
+        where: { role: "customer" },
+        attributes: ["id", "name", "email"], // Specify the attributes you want to return
+      });
+  
+  
+      if (customers.length > 0) {
+        return res.json(customers);
+      } else {
+        return res.status(404).json({ Error: "No customers found" });
+      }
+    } catch (err) {
+      console.error("Error fetching customers:", err);
+      return res.status(500).json({ Error: "Server error" });
+    }
+  });
+  
   //Customer services fetch:
   app.get('/customer/:customer_id', async (req, res) => {
     try {
@@ -478,14 +523,17 @@ app.post('/archive', verifyUser, async (req, res) => {
 
     // Find the service to archive
     const service = await CustomerService.findOne({ where: { customer_id, service_id } });
-
+const name=await User.findOne({ where: { id:customer_id } });
     if (!service) {
       return res.status(404).json({ Error: 'Service not found for this customer' });
+    }  if (!name) {
+      return res.status(404).json({ Error: 'Id not found for this customer' });
     }
 
     // Archive the service
     await Archive.create({
       customer_id: customer_id,
+      customer_name:name.name,
       service_id: service_id,
       plan_name: service.plan_name,
       features: service.features,

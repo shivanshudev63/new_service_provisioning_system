@@ -6,6 +6,10 @@ const Archive = sequelize.define('Archive', {
         type: DataTypes.INTEGER,
         allowNull: false
     },
+    customer_name:{
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
     service_id: {
         type: DataTypes.INTEGER,
         allowNull: false
