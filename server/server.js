@@ -22,7 +22,7 @@ app.use(cookieParser());
 const verifyUser = (req, res, next) => {
   const token = req.cookies.token;
   if (!token) {
-    return res.json({ Error: "You are not authenticated" });
+    return res.json({ Error: "Welcome to our Service Provisioning System" });
   } else {
     jwt.verify(token, "jwt-secret-key", (err, decoded) => {
       if (err) {
