@@ -1,4 +1,4 @@
-import "./App.css";
+
 import { BrowserRouter, Routes, Route } from "react-router-dom"; // Corrected import statement
 import Home from "./Pages/Home"; // Ensure you have imported Home component
 import Register from "./Authentication/Register";

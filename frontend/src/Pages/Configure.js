@@ -131,25 +131,39 @@ const handleSubmit = async (event) => {
   const updatedService = {
     customer_id,
     service_id: selectedService,
-    new_plan: newPlan,
+    plan: newPlan,
+    request_type:'update',
     features: fetchedFeatures // Use the fetched features directly
   };
 
   console.log('Updated Service Payload:', updatedService); // Log the payload being sent
 console.log(updatedService.features)
-  axios.put('http://localhost:8081/customer-service/update', updatedService)
-    .then(res => {
-      if (res.data.Status === "Success") {
-        alert('Service updated successfully!');
-        navigate(`/?customer_id=${customer_id}`);
-      } else {
-        alert('Failed to update service.');
-      }
-    })
-    .catch(err => {
-      console.error("Error updating service plan:", err);
-      alert('An error occurred while updating the service plan.');
-    });
+axios.post('http://localhost:8081/requests', updatedService)
+.then(res => {
+  if (res.data.Status === "Success") {
+    alert('Request sent to the admin successfully!');
+  } else {
+    alert('Failed to send request.');
+  }
+})
+.catch(err => {
+  console.error("Error sending request:", err);
+  alert('An error occurred while sending the request.');
+});
+
+  // axios.put('http://localhost:8081/customer-service/update', updatedService)
+  //   .then(res => {
+  //     if (res.data.Status === "Success") {
+  //       alert('Service updated successfully!');
+  //       navigate(`/?customer_id=${customer_id}`);
+  //     } else {
+  //       alert('Failed to update service.');
+  //     }
+  //   })
+  //   .catch(err => {
+  //     console.error("Error updating service plan:", err);
+  //     alert('An error occurred while updating the service plan.');
+  //   });
 };
 
 
