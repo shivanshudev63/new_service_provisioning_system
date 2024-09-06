@@ -84,19 +84,21 @@ const Configure = () => {
       customer_id: customer_id,
       service_id: selectedService,
       plan: selectedPlan,
+      request_type:'creation'
     };
 console.log(newService);
-    axios.post('http://localhost:8081/customer-service/enroll', newService)
-      .then(res => {
-        if (res.data.Status === "Success") {
-          alert('Service enrolled successfully!');
-          navigate(`/?customer_id=${customer_id}`);
-        } else {
-          alert('Failed to enroll service.');
-        }
-      })
-      .catch(err => console.log("Error enrolling service:", err));
-  };
+axios.post('http://localhost:8081/requests', newService)
+.then(res => {
+  if (res.data.Status === "Success") {
+    alert('Request sent successfully! Awaiting admin approval.');
+    navigate(`/?customer_id=${customer_id}`);
+  } else {
+    alert('Failed to send request.');
+  }
+})
+.catch(err => console.log("Error sending request:", err));
+};
+
 
   return (
     <div>

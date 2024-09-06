@@ -52,32 +52,55 @@ const Terminate = () => {
     }
   
     const serviceToTerminate = services.find(service => service.service_id === parseInt(selectedService));
- 
-    // Send required data to the API
-    axios.post('http://localhost:8081/archive', {
+    const terminationRequest = {
       customer_id: customer_id,
-      service_id: serviceToTerminate.service_id // Use correct field for service ID
-    })
-    .then(() => {
-      axios.delete(`http://localhost:8081/customer-services/${selectedService}`)
-        .then(res => {
-          if (res.data.Status === "Service deleted successfully") {
-            alert('Service terminated successfully.');
-            setServices(services.filter(service => service.service_id !== parseInt(selectedService)));
-            navigate(`/?customer_id=${customer_id}`);
-          } else {
-            alert('Failed to terminate service.');
-          }
-        })
-        .catch(err => {
-          console.error("Error deleting service:", err);
-          alert('An error occurred while terminating the service.');
-        });
+      service_id: serviceToTerminate.service_id, // Use correct field for service ID
+       // Specify the request type for termination
+      plan: serviceToTerminate.plan,
+      features:serviceToTerminate.features,
+      request_type: 'termination',
+      status:'termination' // Pass the plan of the service
+    };
+    
+    axios.post('http://localhost:8081/requests', terminationRequest)
+    .then(res => {
+      
+      if (res.data.Status === "Success") {
+        alert('Request sent successfully! Awaiting admin approval.');
+        navigate(`/?customer_id=${customer_id}`);
+      } else {
+        alert('Failed to send request.');
+      }
     })
     .catch(err => {
-      console.error("Error archiving service:", err);
-      alert('An error occurred while archiving the service.');
+      console.log("Error sending request:", err);
+      alert('An error occurred while sending the termination request.');
     });
+    // Send required data to the API
+    // axios.post('http://localhost:8081/archive', {
+    //   customer_id: customer_id,
+    //   service_id: serviceToTerminate.service_id // Use correct field for service ID
+    // })
+    // .then(() => {
+    //   axios.delete(`http://localhost:8081/customer-services/${selectedService}`)
+    //     .then(res => {
+    //       if (res.data.Status === "Service deleted successfully") {
+    //         alert('Service terminated successfully.');
+    //         setServices(services.filter(service => service.service_id !== parseInt(selectedService)));
+    //         navigate(`/?customer_id=${customer_id}`);
+    //       } else {
+    //         alert('Failed to terminate service.');
+    //       }
+    //     })
+    //     .catch(err => {
+    //       console.error("Error deleting service:", err);
+    //       alert('An error occurred while terminating the service.');
+    //     });
+    // })
+    // .catch(err => {
+    //   console.error("Error archiving service:", err);
+    //   alert('An error occurred while archiving the service.');
+    // });
   };
 
   return (

@@ -1,9 +1,10 @@
-import express from "express";
+  import express from "express";
 import cors from "cors";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import cookieParser from "cookie-parser";
 import User from "./models/User.js";
+import Request from "./models/Request.js";
 import { sequelize, Service, Plan,CustomerService,Archive } from "./models/index.js";
 const saltRounds = 10;
 
@@ -22,7 +23,7 @@ app.use(cookieParser());
 const verifyUser = (req, res, next) => {
   const token = req.cookies.token;
   if (!token) {
-    return res.json({ Error: "Welcome to our Service Provisioning System" });
+    return res.json({ Error: "user Not verified" });
   } else {
     jwt.verify(token, "jwt-secret-key", (err, decoded) => {
       if (err) {
@@ -286,20 +287,17 @@ app.put("/updateservice/:id",  async (req, res) => {
 app.delete("/deleteservice/:id", verifyUser, verifyAdmin, async (req, res) => {
   try {
     const { id } = req.params;
-    console.log(id);
-    // Check if the service exists
+
     const service = await Service.findByPk(id);
     if (!service) {
       return res.status(404).json({ Error: "Service not found" });
     }
 
-    
     await Plan.destroy({ where: { service_id: id } });
     await service.destroy();
 
     return res.json({ Status: "Service deleted successfully" });
   } catch (err) {
-    console.error("Error deleting service:", err);
     return res.status(500).json({ Error: "Error deleting service" });
   }
 });
@@ -314,6 +312,33 @@ app.get('/services', async (req, res) => {
       res.status(500).json({ Error: 'Failed to fetch services' });
     }
   });
+
+  app.get('/services/:customer_id', async (req, res) => {
+    try {
+      const { customer_id } = req.params;
+  
+      // Fetch services where the customer is enrolled
+      const customerServices = await CustomerService.findAll({
+        where: { customer_id },
+        include: {
+          model: Service, // Assuming Service is linked to CustomerService
+          attributes: ['id', 'service_name']
+        }
+      });
+  
+      // Map and return the services
+      const services = customerServices.map(cs => ({
+        id: cs.Service.id,
+        service_name: cs.Service.service_name,
+      }));
+  
+      res.json(services);
+    } catch (error) {
+      console.error("Error fetching user-specific services:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+  
 
 
   app.get('/plans', async (req, res) => {
@@ -358,6 +383,146 @@ app.post('/customer-service/enroll', verifyUser, async (req, res) => {
       return res.status(500).json({ Error: 'Error enrolling service' });
     }
   });
+
+  app.post('/requests', async (req, res) => {
+    try {
+      const { customer_id, service_id, plan, request_type } = req.body;
+  
+      const service = await Service.findByPk(service_id);
+      const selectedPlan = await Plan.findOne({
+        where: {
+          service_id: service_id,
+          plan_name: plan,
+           // Use plan_name instead of plan
+        },
+      });
+      if (!service || !selectedPlan) {
+        return res.status(404).json({ Error: 'Service or Plan not found' });
+      }
+  
+      const newRequest = await Request.create({
+        customer_id,
+        service_id,
+        plan,
+        features:selectedPlan.features,
+        request_type// Optional: Add features if needed
+      });
+  
+      return res.json({ Status: 'Success', Message: 'Request created successfully', Request: newRequest });
+    } catch (err) {
+      console.error('Error creating request:', err);
+      return res.status(500).json({ Error: 'Error creating request' });
+    }
+  });
+  
+  // Endpoint to approve a request
+  app.post('/approve-request/:id', async (req, res) => {
+    try {
+      const requestId = req.params.id;
+      
+      // Fetch the request based on ID
+      const request = await Request.findByPk(requestId);
+      
+      if (!request) {
+        return res.status(404).json({ Error: 'Request not found' });
+      }
+  
+      // Fetch service and user information based on the request
+     
+      
+      let updateResult;
+      
+    
+      switch (request.request_type) {
+        case 'update':
+          updateResult = await CustomerService.update(
+            { features: request.features, plan_name: request.plan },
+            { where: { customer_id: request.customer_id, service_id: request.service_id } }
+          );
+  
+          if (updateResult[0] !== 0) {
+            await Request.destroy({ where: { id: requestId } });
+            return res.json({ Status: 'Success', Message: 'Request approved and service updated' });
+          } else {
+            return res.status(400).json({ Status: 'Failed', Error: 'Update failed' });
+          }
+  
+        case 'termination':
+          const service = await CustomerService.findOne({
+            where: { customer_id: request.customer_id, service_id: request.service_id }
+          });
+          const name = await User.findOne({ where: { id: request.customer_id } });
+      
+          if (!service) {
+            return res.status(404).json({ Error: 'Service not found for this customer' });
+          }
+          
+          if (!name) {
+            return res.status(404).json({ Error: 'Customer ID not found' });
+          }
+          await CustomerService.destroy({ where: { customer_id: request.customer_id, service_id: request.service_id } });
+          await Archive.create({
+            customer_id: request.customer_id,
+            customer_name: name.name,
+            service_id: request.service_id,
+            plan_name: service.plan_name,
+            features: service.features,
+            terminated_at: new Date(),
+          });
+  
+          await Request.destroy({ where: { id: requestId } });
+          return res.json({ Status: 'Success', Message: 'Request approved and service terminated' });
+  
+        case 'creation':
+          await CustomerService.create({
+            customer_id: request.customer_id,
+            service_id: request.service_id,
+            plan_name: request.plan,
+            features: request.features,
+          });
+  
+          await Request.destroy({ where: { id: requestId } });
+          return res.json({ Status: 'Success', Message: 'Request approved and service enrolled' });
+  
+        default:
+          return res.status(400).json({ Error: 'Invalid request type' });
+      }
+    } catch (err) {
+      console.error('Error approving request:', err);
+      return res.status(500).json({ Error: 'Error approving request' });
+    }
+  });
+  
+
+
+    app.delete('/requests/:id', async (req, res) => {
+      try {
+        const id = req.params.id;
+        const result = await Request.destroy({ where: { id } });
+        if (result) {
+          res.json({ Status: "Request deleted successfully" });
+        } else {
+          res.status(404).json({ Status: "Request not found" });
+        }
+      } catch (error) {
+        console.error('Error deleting request:', error);
+        res.status(500).json({ Status: "Failed to delete request" });
+      }
+    });
+  // Endpoint to get all requests for admin
+  app.get('/requests', async (req, res) => {
+    try {
+      const requests = await Request.findAll();
+      return res.json(requests);
+    } catch (err) {
+      console.error('Error fetching requests:', err);
+      return res.status(500).json({ Error: 'Error fetching requests' });
+    }
+  });
+
+
+
+
   app.delete("/customer/:id", verifyUser, verifyAdmin, async (req, res) => {
     try {
       const { id } = req.params;
