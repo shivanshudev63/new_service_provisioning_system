@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate,useLocation   } from 'react-router-dom';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-
+import './Customer.css'
 const Terminate = () => {
   const [auth, setAuth] = useState(false);
   const [message, setMessage] = useState('');
@@ -104,12 +104,12 @@ const Terminate = () => {
   };
 
   return (
-    <div>
+    <div className="configure-container">
       {auth ? (
-        <div>
+        <div className="configure-box">
           <h3>Welcome, {name}</h3>
           <h4>Terminate a Service</h4>
-          <div>
+          <div className="configure-form">
             <label>Select Service: </label>
             <select value={selectedService} onChange={handleServiceChange} required>
               <option value="">Select a service</option>
@@ -119,11 +119,12 @@ const Terminate = () => {
                 </option>
               ))}
             </select>
+            <button onClick={handleTerminate}>Terminate Service</button>
+
           </div>
-          <button onClick={handleTerminate}>Terminate Service</button>
         </div>
       ) : (
-        <div>
+        <div className="configure-message">
           <h3>{message}</h3>
           <h3>Login Now</h3>
           <Link to="/login">Login</Link>

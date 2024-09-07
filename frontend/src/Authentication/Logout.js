@@ -1,16 +1,24 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import './Logout.css';  // Importing the CSS file for styling
+import companyLogo from './logo.png';  // Importing the company logo
 
 const Logout = () => {
   return (
-    <div style={{ textAlign: 'center', marginTop: '50px' }}>
-      <h2>You were logged out</h2>
-      <p>Kindly login again.</p>
-      <Link to="/login">
-        <button style={{ padding: '10px 20px', fontSize: '16px', cursor: 'pointer' }}>
-          Login
-        </button>
-      </Link>
+    <div className="logout-container">
+      <div className="logo-container">
+        <img src={companyLogo} alt="Logo" className="logo" />
+        <h1 className="title">The Future Telecom</h1>
+      </div>
+      <div className="logout-box">
+        <h2>You were logged out</h2>
+        <p>Kindly login again.</p>
+        <Link to="/login">
+          <button className="logout-button">
+            Login
+          </button>
+        </Link>
+      </div>
     </div>
   );
 };

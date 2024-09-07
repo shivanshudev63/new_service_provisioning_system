@@ -3,6 +3,7 @@ import CreateService from '../Components/CreateService';
 import AvailableServices from '../Components/AvailableServices';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
+import './AdminHome.css'; // Ensure this CSS file is imported
 
 const AdminHome = () => {
   const [auth, setAuth] = useState(false);
@@ -10,6 +11,7 @@ const AdminHome = () => {
   const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [requests, setRequests] = useState([]);
   const navigate = useNavigate();
+  axios.defaults.withCredentials = true;
 
   useEffect(() => {
     // Fetch customers
@@ -27,7 +29,6 @@ const AdminHome = () => {
     // Fetch service requests
     axios.get('http://localhost:8081/requests')
       .then(res => {
-        console.log(res.data)
         if (Array.isArray(res.data)) {
           setRequests(res.data);
         } else {
@@ -99,66 +100,91 @@ const AdminHome = () => {
   };
 
   return (
-    <div>
-      <button onClick={handleLogout}>Logout</button>
-      <div>
+    <div className="admin-container">
+      <button className="navbar-logout-button" onClick={handleLogout}>Logout</button>
+      
+      <div className="admin-navbox">
         <Link to="/archive">
           <button className="archive-button">View Archived Services</button>
         </Link>
       </div>
-      <AvailableServices />
-      <h2>Create a New Service</h2>
-      <CreateService />
+      
+      <div className="available-services-box">
+        <AvailableServices />
+      </div>
 
-      <h2>Customer List</h2>
-      <ul>
-        {Array.isArray(customers) ? (
-          customers.map(customer => (
-            <li key={customer.id}>
-              <span>{customer.name} ({customer.email})</span>
-              <button onClick={() => viewCustomerDetails(customer.id)}>View Details</button>
-              <button onClick={() => removeCustomer(customer.id)}>Remove</button>
-            </li>
-          ))
-        ) : (
-          <li>No customers available</li>
-        )}
-      </ul>
+      <div className="create-service-box">
+        <h2>Create a New Service</h2>
+        <CreateService />
+      </div>
 
-      <h2>Service Requests</h2>
-      <ul>
-        {Array.isArray(requests) ? (
-          requests.map(request => (
-            <li key={request.id}>
-              <span>Customer ID: {request.customer_id} | Service ID: {request.service_id} | Plan: {request.plan} | Feature: {request.features}</span>
-              <button onClick={() => approveRequest(request.id)}>Approve</button>
-              <button onClick={() => rejectRequest(request.id)}>Reject</button>
-            </li>
-          ))
-        ) : (
-          <li>No service requests available</li>
-        )}
-      </ul>
-
-      {selectedCustomer && (
-        <div>
-          <h3>Customer Details</h3>
-          <p>Name: {selectedCustomer.name}</p>
-          <p>Email: {selectedCustomer.email}</p>
-          <h4>Enrolled Services</h4>
-          <ul>
-            {selectedCustomer.services_enrolled && selectedCustomer.services_enrolled.length > 0 ? (
-              selectedCustomer.services_enrolled.map((service, index) => (
-                <li key={index}>
-                  {service.service_name} - {service.plan} (Features: {service.features})
-                </li>
+      <div className="service-requests-box">
+        <h2>Service Requests</h2>
+        <ul>
+          {Array.isArray(requests) && requests.length > 0 ? (
+            requests.map(request => (
+              <li key={request.id}>
+                <span >Customer ID: {request.customer_id} | Service ID: {request.service_id} | Plan: {request.plan} | Feature: {request.features}</span>
+               <br/> <button className="approve-btn" onClick={() => approveRequest(request.id)}>Approve</button>
+                <button className="reject-btn" onClick={() => rejectRequest(request.id)}>Reject</button>
+              </li>
+            ))
+          ) : (
+            <li>No service requests available</li>
+          )}
+        </ul>
+      </div>
+      
+      <div className="customer-table-box">
+        <h2>Customer List</h2>
+        <table className="customer-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {Array.isArray(customers) ? (
+              customers.map(customer => (
+                <tr key={customer.id}>
+                  <td>{customer.name}</td>
+                  <td>{customer.email}</td>
+                  <td>
+                    <button className="view-btn" onClick={() => viewCustomerDetails(customer.id)}>View Details</button>
+                    <button className="remove-btn" onClick={() => removeCustomer(customer.id)}>Remove</button>
+                  </td>
+                </tr>
               ))
             ) : (
-              <li>No services enrolled</li>
+              <tr>
+                <td colSpan="3">No customers available</td>
+              </tr>
             )}
-          </ul>
-        </div>
-      )}
+          </tbody>
+        </table>
+        
+        {selectedCustomer && (
+          <div className="customer-details">
+            <h3>Customer Details</h3>
+            <p>Name: {selectedCustomer.name}</p>
+            <p>Email: {selectedCustomer.email}</p>
+            <h4>Enrolled Services</h4>
+            <ul>
+              {selectedCustomer.services_enrolled && selectedCustomer.services_enrolled.length > 0 ? (
+                selectedCustomer.services_enrolled.map((service, index) => (
+                  <li key={index}>
+                    {service.service_name} - {service.plan} (Features: {service.features})
+                  </li>
+                ))
+              ) : (
+                <li>No services enrolled</li>
+              )}
+            </ul>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
-
+import './Customer.css'
 const Configure = () => {
   const [auth, setAuth] = useState(false);
   const [message, setMessage] = useState('');
@@ -14,7 +14,6 @@ const Configure = () => {
   const [currentPlan, setCurrentPlan] = useState('');
   const [planLevels, setPlanLevels] = useState([]);
   const [action, setAction] = useState('');
-  const [newPlanFeatures, setNewPlanFeatures] = useState('');
   const navigate = useNavigate();
 
   const location = useLocation();
@@ -31,7 +30,7 @@ const Configure = () => {
           setName(res.data.name);
 
           // Fetch available services and plans
-          axios.get('http://localhost:8081/services')
+          axios.get(`http://localhost:8081/services/${customer_id}`)
             .then(serviceRes => setServices(serviceRes.data))
             .catch(err => console.log("Error fetching services:", err));
 
@@ -168,12 +167,12 @@ axios.post('http://localhost:8081/requests', updatedService)
 
 
   return (
-    <div>
+    <div className="configure-container">
       {auth ? (
-        <div>
+        <div className="configure-box">
           <h3>Welcome, {name}</h3>
           <h4>Update Your Service Plan</h4>
-          <form onSubmit={handleSubmit}>
+          <form className="configure-form" onSubmit={handleSubmit}>
             <div>
               <label>Select Service: </label>
               <select value={selectedService} onChange={handleServiceChange} required>
@@ -202,7 +201,7 @@ axios.post('http://localhost:8081/requests', updatedService)
           </form>
         </div>
       ) : (
-        <div>
+        <div  className="configure-message">
           <h3>{message}</h3>
           <h3>Login Now</h3>
           <Link to="/login">Login</Link>

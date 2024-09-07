@@ -1,0 +1,58 @@
+/* File: ArchiveTable.css */
+
+.archive-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-image: url('../../public/bg_image.png');
+    height: 100vh;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    color: white;
+    padding: 20px;
+}
+
+.archive-table {
+    width: 100%;
+    max-width: 1000px;
+    border-collapse: collapse;
+    background: rgba(17, 25, 40, 0.7);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.125);
+    color: white;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+.archive-table th,
+.archive-table td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.archive-table th {
+    background: rgba(0, 0, 0, 0.8);
+    font-weight: bold;
+}
+
+.archive-table tr:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.go-back-button {
+    padding: 10px 20px;
+    background-color: #d77f37;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+
+.go-back-button:hover {
+    background-color: #c66b1f;
+}

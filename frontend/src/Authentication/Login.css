@@ -1,0 +1,153 @@
+
+
+body {
+    background: rgb(59,160,145);
+    background: linear-gradient(0deg, rgba(59,160,145,1) 0%, rgba(36,127,163,1) 47%); /* Black background */
+      color: black; /* White text */
+      font-family: 'Arial', sans-serif;
+    }
+    
+    .login-container {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      height: 100vh;
+      background-image: url('../../public/bg_image.png');
+      background-attachment: fixed;  /* Make background img fixed */
+      background-repeat: no-repeat;  /* Don't repeat the img */
+      background-size: cover; /* Cover the entire screen */
+      background-position: center;
+    }
+    
+    .login-box {
+      background: rgba(255,255,255,0.15);
+      -webkit-backdrop-filter: blur(7px);
+      backdrop-filter: blur(7px);
+      border: 1px solid rgba(255,255,255,0.075);
+      padding: 40px;
+      border-radius: 12px;
+      margin-right: 69px;
+      height: 60%;
+      width: 29%;
+      text-align: center;
+      box-shadow: 0px 0px 20px black;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      
+    
+    }
+  
+    .login-box h2{
+      color: white;
+      font-size: 35px;
+      font-weight: bold;
+    }
+    
+    .logo-container {
+      margin-bottom: 20px;
+      width: 63%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      
+    }
+    
+    .logo {
+      width: 275px;
+      box-shadow: 8px 76px 139px -24px black;
+      border-radius: 139px;
+    }
+    
+    .title {
+      font-size: 43px;
+      margin-bottom: 10px;
+      color: white;
+    }
+    
+    .subtitle {
+      font-size: 18px;
+      margin-bottom: 30px;
+    }
+    
+    .login-form{
+      width: 47vh;
+    }
+    
+    
+    .login-form .form-group {
+      margin-bottom: 20px;
+      height: 23%;
+      position: relative;
+    }
+  
+    .form-group .input-icon {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #888;
+    }
+    
+    .form-input {
+      width: 84%;
+      padding: 10px 10px 10px 40px;
+      font-size: 16px;
+      border-radius: 5px;
+      border: 1px solid white;
+      background-color: rgb(223 237 235);
+      
+      color: black;
+    }
+  
+    ::placeholder {
+      color: black;
+      opacity: 0.85; /* Firefox */
+    }
+    
+    .submit-button {
+      background-color: #b247db;
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      font-size: 20px;
+      font-weight: bold;
+      border-radius: 5px;
+      cursor: pointer;
+      width: 100%;
+      margin-bottom: 20px;
+      transition: all 0.3s ease;
+    }
+    
+    .submit-button:hover {
+      background-color: #b300ff;
+      box-shadow: 0px 0px 15px #8f00ff;
+    }
+    
+    .create-account-link {
+      text-decoration: none;
+      width: 103%;
+    }
+    
+    .create-account-button {
+      background-color: rgb(24 108 204);
+      color: #fff;
+      border: none;
+      padding: 15px 30px;
+      font-size: 20px;
+      font-style: bold;
+      border-radius: 5px;
+      cursor: pointer;
+      width: 77%;
+      transition: all 0.3s ease;
+    }
+    
+    .create-account-button:hover {
+      background-color:  rgb(44, 142, 255);
+      box-shadow: 0px 0px 15px  rgb(10, 81, 163);;
+    }
+    

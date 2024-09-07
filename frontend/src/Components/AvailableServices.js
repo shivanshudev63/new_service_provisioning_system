@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import './AvaliableServices.css'; // Import the CSS file for styling
 
 const AvailableServices = () => {
     const [services, setServices] = useState([]);
@@ -7,6 +8,7 @@ const AvailableServices = () => {
     const [updatedServiceName, setUpdatedServiceName] = useState('');
     const [updatedPlans, setUpdatedPlans] = useState([]);
     const [newPlan, setNewPlan] = useState({ plan_name: '', features: '' });
+    axios.defaults.withCredentials = true;
 
     useEffect(() => {
         const fetchServices = async () => {
@@ -43,15 +45,15 @@ const AvailableServices = () => {
             console.error('Error updating service plans:', error);
         }
     };
-    
+
     const handleDeleteService = async (id) => {
+        console.log('Deleting service with id:', id); // Log the service ID for debugging
         try {
             await axios.delete(`http://localhost:8081/deleteservice/${id}`);
-            alert('Service deleted successfully');
             const response = await axios.get('http://localhost:8081/getservices');
             setServices(response.data);
         } catch (error) {
-            console.error('Error deleting service:', error);
+            console.error('Error deleting service:', error); // Log any errors
         }
     };
 
@@ -66,41 +68,33 @@ const AvailableServices = () => {
             console.error('Unexpected format for service.plans:', service.plans);
             setUpdatedPlans([]);
         }
-    
+
         setSelectedService(service);
         setUpdatedServiceName(service.service_name);
     };
-    
+
     const handlePlanChange = (index, field, value) => {
-        console.log('Before update:', updatedPlans);
-        console.log('Index:', index);
-        console.log('Field:', field);
-        console.log('Value:', value);
-    
         if (index < 0 || index >= updatedPlans.length) {
             console.error('Invalid index:', index);
             return;
         }
-    
+
         const updatedPlansCopy = [...updatedPlans];
-    
+
         if (!updatedPlansCopy[index]) {
             console.error('No plan found at index:', index);
             return;
         }
-    
+
         updatedPlansCopy[index] = { ...updatedPlansCopy[index], [field]: value };
-    
-        console.log('After update:', updatedPlansCopy);
-    
+
         setUpdatedPlans(updatedPlansCopy);
     };
-    
+
     const handleAddPlan = () => {
         if (newPlan.plan_name && newPlan.features) {
             setUpdatedPlans(prevPlans => {
                 const updatedPlans = [...prevPlans, newPlan];
-                console.log('Updated plans after adding new plan:', updatedPlans);
                 return updatedPlans;
             });
             setNewPlan({ plan_name: '', features: '' });
@@ -110,20 +104,20 @@ const AvailableServices = () => {
     };
 
     return (
-        <div>
+        <div className="available-services-container">
             <h1>Available Services</h1>
             {services.length > 0 ? (
-                <ul>
+                <ul className="service-list">
                     {services.map((service) => (
-                        <li key={service.id}>
+                        <li key={service.id} className="service-item">
                             <h2>{service.service_name}</h2>
                             {Object.entries(service.plans).map(([planName, features]) => (
                                 <p key={planName}>
                                     <strong>{planName.charAt(0).toUpperCase() + planName.slice(1)}:</strong> {features}
                                 </p>
                             ))}
-                            <button onClick={() => handleSelectService(service)}>Update</button>
-                            <button onClick={() => handleDeleteService(service.id)}>Delete</button>
+                            <button className="button update-btn" onClick={() => handleSelectService(service)}>Update</button>
+                            <button className="button delete-btn" onClick={() => handleDeleteService(service.id)}>Delete</button>
                         </li>
                     ))}
                 </ul>
@@ -132,20 +126,15 @@ const AvailableServices = () => {
             )}
 
             {selectedService && (
-                <div>
+                <div className="update-service-form">
                     <h2>Update Service</h2>
-                    {/* <input
-                        type="text"
-                        value={updatedServiceName}
-                        onChange={(e) => setUpdatedServiceName(e.target.value)}
-                        placeholder="Service Name"
-                    /> */}
                     <h1>{selectedService.service_name}</h1>
                     {updatedPlans.length > 0 ? (
                         updatedPlans.map((plan, index) => (
-                            <div key={index}>
+                            <div key={index} className="plan-form">
                                 <h3>{plan.plan_name}</h3>
                                 <textarea
+                                    className="textarea"
                                     value={plan.features}
                                     onChange={(e) => handlePlanChange(index, 'features', e.target.value)}
                                     placeholder="Features (comma separated)"
@@ -155,22 +144,24 @@ const AvailableServices = () => {
                     ) : (
                         <p>No plans available</p>
                     )}
-                    {/* <div>
+                    {/* <div className="add-plan-form">
                         <h3>Add New Plan</h3>
                         <input
                             type="text"
                             value={newPlan.plan_name}
                             onChange={(e) => setNewPlan({ ...newPlan, plan_name: e.target.value })}
                             placeholder="Plan Name"
+                            className="input"
                         />
                         <textarea
                             value={newPlan.features}
                             onChange={(e) => setNewPlan({ ...newPlan, features: e.target.value })}
                             placeholder="Features (comma separated)"
+                            className="textarea"
                         />
-                        <button onClick={handleAddPlan}>Add Plan</button>
+                        <button className="button add-btn" onClick={handleAddPlan}>Add Plan</button>
                     </div> */}
-                    <button onClick={() => handleUpdateService(selectedService.id)}>Save Changes</button>
+                    <button className="button save-btn" onClick={() => handleUpdateService(selectedService.id)}>Save Changes</button>
                 </div>
             )}
         </div>

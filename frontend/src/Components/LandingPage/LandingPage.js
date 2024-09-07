@@ -11,6 +11,7 @@ import {
   Button,
   ErrorMessage,
   LoginPrompt,
+  AuthContainer
 } from "./StyledComponent";
 import logo from "../../Assets/logo.jpg"; // Adjust the path as per your directory structure
 
@@ -32,7 +33,7 @@ const LandingPage = () => {
     // Fetch the authentication status and user details
     axios
       .get("http://localhost:8081")
-      .then((res) => {
+      .then((res) => {console.log(res.data)
         if (res.data.Status === "Success") {
           setAuth(true);
           setName(res.data.name);
@@ -85,10 +86,13 @@ const LandingPage = () => {
   };
 
   return (
-    <Container>
+    <>
+   
       {auth ? (
-        <div>
+         <AuthContainer>
+        
           <WelcomeMessage>Welcome, {name}</WelcomeMessage>
+          <Button onClick={handleLogout}>Logout</Button>
           {customerDetails ? (
             <ServiceList>
               <h4>Your Services</h4>
@@ -112,9 +116,11 @@ const LandingPage = () => {
           <Button onClick={handleEnrollService}>Enroll in a Service</Button>
           <Button onClick={handleConfigureService}>Configure Services</Button>
           <Button onClick={handleTerminateService}>Terminate a Service</Button>
-          <Button onClick={handleLogout}>Logout</Button>
-        </div>
+        
+        </AuthContainer>
+        
       ) : (
+      <Container>
         <div>
           <ErrorMessage>{message}</ErrorMessage>
           <Link to="/login"> <LoginPrompt>
@@ -122,8 +128,10 @@ const LandingPage = () => {
             <img src={logo} alt="SPS Logo" style={{ width: '100px', height: '100px' }} /> {/* Image instead of text */}
           </LoginPrompt></Link>
         </div>
+        </Container>
       )}
-    </Container>
+    
+   </>
   );
 };
 

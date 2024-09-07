@@ -1,16 +1,19 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import './ArchiveData.css'; // Import the new CSS file
+
 const ArchiveTable = () => {
   const [archives, setArchives] = useState([]);
-const navigate=useNavigate();
+  const navigate = useNavigate();
+
   useEffect(() => {
     // Fetch the archived data from the backend
     const fetchArchives = async () => {
       try {
         const response = await axios.get("http://localhost:8081/archives");
         setArchives(response.data);
-        console.log(response.data)
+        console.log(response.data);
       } catch (error) {
         console.error("Error fetching archive data:", error);
       }
@@ -18,14 +21,16 @@ const navigate=useNavigate();
 
     fetchArchives();
   }, []);
+
   const handleGoBack = () => {
     navigate(-1); // Navigate to the previous page
   };
+
   return (
-    <div className="archive-table">
-    <button onClick={handleGoBack}>Go Back</button> {/* Add the "Go Back" button */}
+    <div className="archive-container">
+      <button className="go-back-button" onClick={handleGoBack}>Go Back</button>
       <h2>Archived Services</h2>
-      <table>
+      <table className="archive-table">
         <thead>
           <tr>
             <th>Customer ID</th>

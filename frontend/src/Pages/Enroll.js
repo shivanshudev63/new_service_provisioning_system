@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
-
+import './Customer.css'
 const Configure = () => {
   const [auth, setAuth] = useState(false);
   const [message, setMessage] = useState('');
@@ -101,12 +101,12 @@ axios.post('http://localhost:8081/requests', newService)
 
 
   return (
-    <div>
+    <div className="configure-container">
       {auth ? (
-        <div>
+        <div className="configure-box">
           <h3>Welcome, {name}</h3>
-          <h4>Configure Your Services</h4>
-          <form onSubmit={handleSubmit}>
+          <h4>Enroll Your Services</h4>
+          <form className="configure-form" onSubmit={handleSubmit}>
             <div>
               <label>Select Service: </label>
               <select value={selectedService} onChange={handleServiceChange} required>
@@ -130,7 +130,7 @@ axios.post('http://localhost:8081/requests', newService)
               </select>
             </div>
             {features && (
-              <div>
+              <div className="plan-features">
                 <h5>Plan Features:</h5>
                 <p>{features}</p>
               </div>
@@ -139,7 +139,7 @@ axios.post('http://localhost:8081/requests', newService)
           </form>
         </div>
       ) : (
-        <div>
+        <div className="configure-message">
           <h3>{message}</h3>
           <h3>Login Now</h3>
           <Link to="/login">Login</Link>

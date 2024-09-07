@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import './CreateService.css'; // Ensure this import is at the top of your file to use the styles
 
 const planTypes = [
     "basic",
@@ -9,6 +10,7 @@ const planTypes = [
 ];
 
 const CreateService = () => {
+    axios.defaults.withCredentials = true;
     const [serviceName, setServiceName] = useState('');
     const [plans, setPlans] = useState([
         { plan_name: planTypes[0], features: '' }
@@ -66,7 +68,6 @@ const CreateService = () => {
             setServiceName('');
             setPlans([{ plan_name: planTypes[0], features: '' }]);
             window.location.reload();
-            
         } catch (err) {
             console.error("Error creating service:", err);
             alert('An error occurred while creating the service.');
@@ -74,52 +75,54 @@ const CreateService = () => {
     };
 
     return (
-        <form onSubmit={handleSubmit}>
-            <div>
-                <label>Service Name:</label>
-                <input
-                    type="text"
-                    name="service_name"
-                    value={serviceName}
-                    onChange={(e) => setServiceName(e.target.value)}
-                    required
-                />
-            </div>
-
-            {plans.map((plan, index) => (
-                <div key={index}>
-                    <label>Plan Type:</label>
-                    <select
-                        name="plan_name"
-                        value={plan.plan_name}
-                        onChange={(e) => handlePlanChange(index, e)}
-                        required
-                    >
-                        {planTypes.map(type => (
-                            <option key={type} value={type}>
-                                {type.charAt(0).toUpperCase() + type.slice(1)}
-                            </option>
-                        ))}
-                    </select>
-
-                    <label>Features:</label>
+        <div className="create-service-box1">
+            <form onSubmit={handleSubmit}>
+                <div>
+                    <label>Service Name:</label>
                     <input
                         type="text"
-                        name="features"
-                        value={plan.features}
-                        onChange={(e) => handlePlanChange(index, e)}
+                        name="service_name"
+                        value={serviceName}
+                        onChange={(e) => setServiceName(e.target.value)}
                         required
                     />
-
-                    <button type="button" onClick={() => handleRemovePlan(index)}>Remove Plan</button>
                 </div>
-            ))}
 
-            <button type="button" onClick={handleAddPlan}>Add Plan</button>
-            <button type="submit">Create Service</button>
+                {plans.map((plan, index) => (
+                    <div key={index} className="plan-box">
+                        <label>Plan Type:</label>
+                        <select
+                            name="plan_name"
+                            value={plan.plan_name}
+                            onChange={(e) => handlePlanChange(index, e)}
+                            required
+                        >
+                            {planTypes.map(type => (
+                                <option key={type} value={type}>
+                                    {type.charAt(0).toUpperCase() + type.slice(1)}
+                                </option>
+                            ))}
+                        </select>
 
-            {error && <p style={{ color: 'red' }}>{error}</p>}
-        </form>
+                        <label>Features:</label>
+                        <input
+                            type="text"
+                            name="features"
+                            value={plan.features}
+                            onChange={(e) => handlePlanChange(index, e)}
+                            required
+                        />
+
+                        <button type="button" onClick={() => handleRemovePlan(index)}>Remove Plan</button>
+                    </div>
+                ))}
+
+                <button type="button" onClick={handleAddPlan}>Add Plan</button>
+                <button type="submit">Create Service</button>
+
+                {error && <p style={{ color: 'red' }}>{error}</p>}
+            </form>
+        </div>
     );
 };
 

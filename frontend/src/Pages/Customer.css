@@ -1,0 +1,104 @@
+/* File: Configure.css */
+
+.configure-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-image: url('../../public/bg_image.png');
+    height: 100vh;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    color: white;
+    padding: 20px;
+}
+
+.configure-box {
+    width: 100%;
+    max-width: 600px;
+    background: rgba(17, 25, 40, 0.7);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.125);
+    padding: 20px;
+    backdrop-filter: blur(-4px) saturate(184%);
+    -webkit-backdrop-filter: blur(4px) saturate(184%);
+}
+
+.configure-box h3 {
+    font-size: 33px;
+    font-weight: bold;
+    margin: 0;
+}
+
+.configure-box h4 {
+    font-size: 25px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.configure-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.configure-form label {
+    font-size: 18px;
+}
+
+.configure-form select {
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background-color: rgba(255, 255, 255, 0.9);
+    color: #333;
+}
+
+.configure-form select:focus {
+    outline: none;
+    border-color: #d77f37;
+}
+
+.configure-form button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #d77f37;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.configure-form button:hover {
+    background-color: #c66b1f;
+}
+
+.configure-message {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.configure-message a {
+    color: #d77f37;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.configure-message a:hover {
+    text-decoration: underline;
+}
+
+.plan-features {
+    align-self: center;
+    justify-self: center;
+    margin: 50px 0;
+    color: white;
+    padding: 15px;
+    font-size: 20px;
+    background: rgba(17, 25, 40, 0.826);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.125);
+}

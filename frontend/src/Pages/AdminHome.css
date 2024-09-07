@@ -1,0 +1,217 @@
+/* File: AdminHome.css */
+
+.admin-container {
+    display: flex;
+    flex-direction: column;
+    background: rgb(2,0,36); 
+    background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(2,30,89,1) 62%, rgba(3,15,107,1) 100%);
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    color: white;
+    padding: 20px;
+    position: relative;
+    align-items: center; /* Center items horizontally */
+}
+
+.admin-navbox {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+    margin-top: 100px;
+}
+
+.archive-button {
+    padding: 12px 24px;
+    width: 200px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 18px;
+    color: #fff;
+    background-color: #4a90e2;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.archive-button:hover {
+    background-color: #357abd;
+    transform: scale(1.05);
+}
+
+.navbar-logout-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 18px;
+    color: #fff;
+    background-color: #d77f37;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.navbar-logout-button:hover {
+    background-color: #c66b1f;
+    transform: scale(1.05);
+}
+
+.service-requests-box,
+.customer-table-box,
+.customer-details {
+    width: 100%;
+    max-width: 600px;
+    background: rgba(17, 25, 40, 0.7);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.125);
+    padding: 20px;
+    backdrop-filter: blur(4px) saturate(184%);
+    -webkit-backdrop-filter: blur(4px) saturate(184%);
+    margin-bottom: 20px;
+    margin-left: auto;
+    margin-right: auto; /* Center horizontally */
+}
+
+.service-requests-box h2,
+.customer-table-box h2,
+.customer-details h3,
+.customer-details h4 {
+    font-size: 25px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    
+    padding-left: 20px;
+}
+
+.service-requests-box ul,
+.customer-details ul {
+    list-style: none;
+    padding-left: 20px;
+    padding-right: 20px;
+
+}
+
+.service-requests-box li,
+.customer-details li {
+    border-bottom: 1px solid rgb(67, 66, 66); /* Thin line separator */
+    
+    margin-bottom: 10px;
+    position: relative;
+}
+.service-requests-box li:last-child {
+    border-bottom: none; /* Remove the bottom border for the last item */
+}
+.service-requests-box button,
+.view-btn,
+.remove-btn {
+    margin-right: 10px;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.view-btn {
+    background-color: #2196f3;
+    color: #fff;
+}
+
+.view-btn:hover {
+    background-color: #1976d2;
+    transform: scale(1.05);
+}
+
+.remove-btn {
+    background-color: #f44336;
+    color: #fff;
+}
+
+.remove-btn:hover {
+    background-color: #e53935;
+    transform: scale(1.05);
+}
+
+.approve-btn {
+    background-color: #4caf50;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    margin-right: 0.5rem;
+    color: #fff;
+}
+
+.approve-btn:hover {
+    background-color: #45a049;
+    transform: scale(1.05);
+}
+
+.reject-btn {
+    background-color: #f44336;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    margin-right: 0.5rem;
+    color: #fff;
+}
+
+.reject-btn:hover {
+    background-color: #e53935;
+    transform: scale(1.05);
+}
+
+.customer-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.customer-table th,
+.customer-table td {
+    padding: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.125);
+}
+
+.customer-table th {
+    background: rgba(17, 25, 40, 0.9);
+}
+
+.customer-table tr:nth-child(even) {
+    background: rgba(17, 25, 40, 0.6);
+}
+
+.customer-table tr:nth-child(odd) {
+    background: rgba(17, 25, 40, 0.7);
+}
+
+.customer-details {
+    max-width: 500px; /* Adjusted width for smaller box */
+    margin-top: 20px;
+}
+
+.available-services-box,
+.create-service-box {
+    background: rgba(17, 25, 40, 0.7);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.125);
+    padding: 20px;
+    backdrop-filter: blur(4px) saturate(184%);
+    -webkit-backdrop-filter: blur(4px) saturate(184%);
+    margin-bottom: 20px;
+    width: 100%;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto; /* Center horizontally */
+}
+
+.available-services-box {
+    margin-top: 20px;
+}
+
+.create-service-box {
+    margin-top: 20px;
+}
+.create-service-box h2 {
+    margin-left: 20px;
+}
