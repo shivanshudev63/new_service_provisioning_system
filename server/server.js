@@ -12,9 +12,13 @@ import {
   CustomerService,
   Archive,
 } from "./models/index.js";
-const saltRounds = 10;
+import swaggerOptions from "./swagger.js";
 
+import swaggerJsdoc from 'swagger-jsdoc';
+import swaggerUi from 'swagger-ui-express';
+const saltRounds = 10;
 const app = express();
+
 app.use(express.json());
 app.use(
   cors({
@@ -24,6 +28,9 @@ app.use(
   })
 );
 app.use(cookieParser());
+
+const swaggerSpec = swaggerJsdoc(swaggerOptions);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Middleware to verify if the user is authenticated
 const verifyUser = (req, res, next) => {
@@ -65,9 +72,27 @@ const verifyAdmin = async (req, res, next) => {
   }
 };
 
-// app.get("/", verifyUser, (req, res) => {
-//   return res.json({ Status: "Success", name: req.name });
-// });
+
+
+/**
+ * @swagger
+ * /:
+ *   get:
+ *     summary: Get the status of the server
+ *     tags: [Server]
+ *     responses:
+ *       200:
+ *         description: Server status
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 Status:
+ *                   type: string
+ *                 name:
+ *                   type: string
+ */
 
 app.get("/", verifyUser, (req, res) => {
   return res.json({
@@ -75,6 +100,36 @@ app.get("/", verifyUser, (req, res) => {
     name: req.name,
   });
 });
+
+/**
+ * @swagger
+ * /customers:
+ *   get:
+ *     summary: Get a list of customers
+ *     tags: [Customers]
+ *     security:
+ *       - Bearer: []
+ *     responses:
+ *       200:
+ *         description: List of customers
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: integer
+ *                   name:
+ *                     type: string
+ *                   email:
+ *                     type: string
+ *       403:
+ *         description: Access denied
+ */
+
+
 
 app.get("/customers", verifyUser, verifyAdmin, async (req, res) => {
   try {
@@ -93,6 +148,39 @@ app.get("/customers", verifyUser, verifyAdmin, async (req, res) => {
     return res.status(500).json({ Error: "Server error" });
   }
 });
+
+/**
+ * @swagger
+ * /register:
+ *   post:
+ *     summary: Register a new user
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Registration successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 Status:
+ *                   type: string
+ *       500:
+ *         description: Server error
+ */
 app.post("/register", async (req, res) => {
   try {
     const hash = await bcrypt.hash(req.body.password, saltRounds);
@@ -108,6 +196,45 @@ app.post("/register", async (req, res) => {
     return res.json({ Error: "Error inserting data in server" });
   }
 });
+
+
+/**
+ * @swagger
+ * /login:
+ *   post:
+ *     summary: Login a user
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Login successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 Status:
+ *                   type: string
+ *                 role:
+ *                   type: string
+ *                 id:
+ *                   type: integer
+ *       401:
+ *         description: Incorrect credentials
+ *       500:
+ *         description: Server error
+ */
+
 app.post("/login", async (req, res) => {
   try {
     const user = await User.findOne({ where: { email: req.body.email } });
@@ -136,38 +263,43 @@ app.post("/login", async (req, res) => {
   }
 });
 
-// Route to fetch customer data by ID
-// app.get("/customer/:id", async (req, res) => {
-//   try {
-//     const customer = await Customer.findOne({
-//       where: { customer_id: req.params.id },
-//       include: [
-//         {
-//           model: Service,
-//           through: { attributes: [] },
-//         },
-//       ],
-//     });
+/**
+ * @swagger
+ * /createservice:
+ *   post:
+ *     summary: Create a new service.
+ *     description: Admin creates a new service with associated plans.
+ *     tags:
+ *       - Services
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               service_name:
+ *                 type: string
+ *               plans:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     plan_name:
+ *                       type: string
+ *                     features:
+ *                       type: string
+ *     responses:
+ *       200:
+ *         description: Service created successfully.
+ *       400:
+ *         description: Invalid data.
+ *       500:
+ *         description: Server error.
+ */
 
-//     if (customer) {
-//       const customerDetails = {
-//         customer_id: customer.id,
-//         name: customer.name,
-//         services_enrolled: customer.Services.map((service) => ({
-//           service_name: service.service_name,
-//           plan: service.plan,
-//           features: service.features,
-//         })),
-//       };
-//       return res.json(customerDetails);
-//     } else {
-//       return res.status(404).json({ error: "Customer not found" });
-//     }
-//   } catch (err) {
-//     console.error("Error fetching customer data:", err);
-//     return res.status(500).json({ error: "Server error" });
-//   }
-// });
 
 app.post("/createservice", verifyUser, verifyAdmin, async (req, res) => {
   try {
@@ -208,6 +340,29 @@ app.post("/createservice", verifyUser, verifyAdmin, async (req, res) => {
 });
 
 // Middleware to verify if the user is an admin
+/**
+ * @swagger
+ * /checkservice:
+ *   get:
+ *     summary: Check if a service name exists.
+ *     description: Check if a service name already exists in the system.
+ *     tags:
+ *       - Services
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: service_name
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Whether the service exists.
+ *       500:
+ *         description: Server error.
+ */
+
 
 app.get("/checkservice", async (req, res) => {
   try {
@@ -224,6 +379,24 @@ app.get("/checkservice", async (req, res) => {
 });
 
 // Route to fetch all services and their plans
+
+/**
+ * @swagger
+ * /getservices:
+ *   get:
+ *     summary: Get all services with plans.
+ *     description: Fetch all available services along with their plans and features.
+ *     tags:
+ *       - Services
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of services with plans.
+ *       500:
+ *         description: Server error.
+ */
+
 app.get("/getservices", async (req, res) => {
   try {
     const services = await Service.findAll({
@@ -252,14 +425,85 @@ app.get("/getservices", async (req, res) => {
     res.status(500).json({ Error: "Server error" });
   }
 });
+/**
+ * @swagger
+ * /logout:
+ *   get:
+ *     summary: Logout user.
+ *     description: Clears the user token and logs out the user.
+ *     tags:
+ *       - Authentication
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Logout successful.
+ *       500:
+ *         description: Server error.
+ */
 
 app.get("/logout", (req, res) => {
   res.clearCookie("token");
   return res.json({ Status: "Success" });
 });
 
-// done hai
-// Route to update an existing service
+/**
+ * @swagger
+ * /updateservice/{id}:
+ *   put:
+ *     summary: Update a service.
+ *     description: Update an existing service by its ID, modifying its associated plans.
+ *     tags:
+ *       - Services
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *       - in: body
+ *         name: plans
+ *         description: Updated plans for the service.
+ *         schema:
+ *           type: object
+ *           properties:
+ *             plans:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   plan_name:
+ *                     type: string
+ *                   features:
+ *                     type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               plans:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     plan_name:
+ *                       type: string
+ *                     features:
+ *                       type: string
+ *     responses:
+ *       200:
+ *         description: Service updated successfully.
+ *       404:
+ *         description: Service not found.
+ *       500:
+ *         description: Server error.
+ */
+
+
 
 app.put("/updateservice/:id", async (req, res) => {
   try {
@@ -293,6 +537,32 @@ app.put("/updateservice/:id", async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /deleteservice/{id}:
+ *   delete:
+ *     summary: Delete a service.
+ *     description: Delete a service and its associated plans.
+ *     tags:
+ *       - Services
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Service deleted successfully.
+ *       404:
+ *         description: Service not found.
+ *       500:
+ *         description: Server error.
+ */
+
+
 app.delete("/deleteservice/:id", verifyUser, verifyAdmin, async (req, res) => {
   try {
     const { id } = req.params;
@@ -311,6 +581,24 @@ app.delete("/deleteservice/:id", verifyUser, verifyAdmin, async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /services:
+ *   get:
+ *     summary: Get all services.
+ *     description: Fetch a list of all available services.
+ *     tags:
+ *       - Services
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of services.
+ *       500:
+ *         description: Server error.
+ */
+
+
 //For customer enrollment
 app.get("/services", async (req, res) => {
   try {
@@ -321,6 +609,30 @@ app.get("/services", async (req, res) => {
     res.status(500).json({ Error: "Failed to fetch services" });
   }
 });
+
+/**
+ * @swagger
+ * /services/{customer_id}:
+ *   get:
+ *     summary: Get services by customer ID.
+ *     description: Fetch services a customer is enrolled in by their customer ID.
+ *     tags:
+ *       - Services
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: customer_id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: List of services.
+ *       500:
+ *         description: Server error.
+ */
+
 
 app.get("/services/:customer_id", async (req, res) => {
   try {
@@ -347,6 +659,44 @@ app.get("/services/:customer_id", async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /plans:
+ *   get:
+ *     summary: Get all plans.
+ *     description: Fetch a list of all available plans.
+ *     tags:
+ *       - Plans
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of plans retrieved successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: integer
+ *                   plan_name:
+ *                     type: string
+ *                   features:
+ *                     type: string
+ *       500:
+ *         description: Failed to fetch plans.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ */
+
+
 app.get("/plans", async (req, res) => {
   try {
     const plans = await Plan.findAll();
@@ -356,6 +706,67 @@ app.get("/plans", async (req, res) => {
     res.status(500).json({ Error: "Failed to fetch plans" });
   }
 });
+
+/**
+ * @swagger
+ * /customer-service/enroll:
+ *   post:
+ *     summary: Enroll customer in a service.
+ *     description: Enroll a customer in a selected service and plan.
+ *     tags:
+ *       - Customer Service
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               customer_id:
+ *                 type: integer
+ *                 example: 123
+ *               service_id:
+ *                 type: integer
+ *                 example: 456
+ *               plan:
+ *                 type: string
+ *                 example: "premium"
+ *     responses:
+ *       200:
+ *         description: Service enrolled successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Service enrolled successfully."
+ *       400:
+ *         description: Invalid request data.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Invalid data provided."
+ *       500:
+ *         description: Server error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Failed to enroll customer in service."
+ */
+
+
 
 // In your existing Express server
 app.post("/customer-service/enroll", verifyUser, async (req, res) => {
@@ -392,6 +803,96 @@ app.post("/customer-service/enroll", verifyUser, async (req, res) => {
   }
 });
 
+
+/**
+ * @swagger
+ * /requests:
+ *   post:
+ *     summary: Create a new service request.
+ *     description: Create a new request for a service, including the service, plan, and request type. Validates the existence of the service and plan before creating the request.
+ *     tags:
+ *       - Requests
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               customer_id:
+ *                 type: integer
+ *                 example: 123
+ *               service_id:
+ *                 type: integer
+ *                 example: 456
+ *               plan:
+ *                 type: string
+ *                 example: "premium"
+ *               request_type:
+ *                 type: string
+ *                 example: "new"
+ *     responses:
+ *       200:
+ *         description: Request created successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 Status:
+ *                   type: string
+ *                   example: "Success"
+ *                 Message:
+ *                   type: string
+ *                   example: "Request created successfully"
+ *                 Request:
+ *                   type: object
+ *                   properties:
+ *                     customer_id:
+ *                       type: integer
+ *                     service_id:
+ *                       type: integer
+ *                     plan:
+ *                       type: string
+ *                     features:
+ *                       type: string
+ *                     request_type:
+ *                       type: string
+ *       400:
+ *         description: Invalid request data.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 Error:
+ *                   type: string
+ *                   example: "Invalid data provided."
+ *       404:
+ *         description: Service or Plan not found.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 Error:
+ *                   type: string
+ *                   example: "Service or Plan not found."
+ *       500:
+ *         description: Server error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 Error:
+ *                   type: string
+ *                   example: "Error creating request."
+ */
+
+
 app.post("/requests", async (req, res) => {
   try {
     const { customer_id, service_id, plan, request_type } = req.body;
@@ -427,19 +928,80 @@ app.post("/requests", async (req, res) => {
   }
 });
 
-// Endpoint to approve a request
+
+/**
+ * @swagger
+ * /approve-request/{id}:
+ *   post:
+ *     summary: Approve a service request.
+ *     description: Approve a service request based on its ID, and perform the requested action (update, termination, or creation). Updates the corresponding service or customer data as needed.
+ *     tags:
+ *       - Requests
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *           example: 789
+ *     responses:
+ *       200:
+ *         description: Request approved and action completed successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 Status:
+ *                   type: string
+ *                   example: "Success"
+ *                 Message:
+ *                   type: string
+ *                   example: "Request approved and service updated"
+ *       400:
+ *         description: Invalid request or update failed.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 Error:
+ *                   type: string
+ *                   example: "Invalid request type" or "Update failed"
+ *       404:
+ *         description: Request, service, or customer not found.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 Error:
+ *                   type: string
+ *                   example: "Request not found" or "Service not found for this customer"
+ *       500:
+ *         description: Server error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 Error:
+ *                   type: string
+ *                   example: "Error approving request"
+ */
+
+
 app.post("/approve-request/:id", async (req, res) => {
   try {
     const requestId = req.params.id;
 
-    // Fetch the request based on ID
     const request = await Request.findByPk(requestId);
 
     if (!request) {
       return res.status(404).json({ Error: "Request not found" });
     }
-
-    // Fetch service and user information based on the request
 
     let updateResult;
 
@@ -529,6 +1091,57 @@ app.post("/approve-request/:id", async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /requests/{id}:
+ *   delete:
+ *     summary: Delete a request.
+ *     description: Delete a request based on its ID. If the request is found and deleted successfully, a success message is returned. Otherwise, an error message is returned.
+ *     tags:
+ *       - Requests
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *           example: 123
+ *     responses:
+ *       200:
+ *         description: Request deleted successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 Status:
+ *                   type: string
+ *                   example: "Request deleted successfully"
+ *       404:
+ *         description: Request not found.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 Status:
+ *                   type: string
+ *                   example: "Request not found"
+ *       500:
+ *         description: Server error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 Status:
+ *                   type: string
+ *                   example: "Failed to delete request"
+ */
+
+
 app.delete("/requests/:id", async (req, res) => {
   try {
     const id = req.params.id;
@@ -544,6 +1157,51 @@ app.delete("/requests/:id", async (req, res) => {
   }
 });
 // Endpoint to get all requests for admin
+
+/**
+ * @swagger
+ * /requests:
+ *   get:
+ *     summary: Get all requests.
+ *     description: Fetch a list of all service requests. Returns all requests stored in the system.
+ *     tags:
+ *       - Requests
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of all requests.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: integer
+ *                   customer_id:
+ *                     type: integer
+ *                   service_id:
+ *                     type: integer
+ *                   plan:
+ *                     type: string
+ *                   features:
+ *                     type: string
+ *                   request_type:
+ *                     type: string
+ *       500:
+ *         description: Server error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 Error:
+ *                   type: string
+ *                   example: "Error fetching requests"
+ */
+
 app.get("/requests", async (req, res) => {
   try {
     const requests = await Request.findAll();
@@ -553,6 +1211,57 @@ app.get("/requests", async (req, res) => {
     return res.status(500).json({ Error: "Error fetching requests" });
   }
 });
+
+/**
+ * @swagger
+ * /customer/{id}:
+ *   delete:
+ *     summary: Delete a customer.
+ *     description: Delete a customer by their ID, move their associated services to an archive, and remove all related records from the system. Requires admin privileges.
+ *     tags:
+ *       - Customers
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *           example: 123
+ *     responses:
+ *       200:
+ *         description: Customer removed successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 Status:
+ *                   type: string
+ *                   example: "Customer removed successfully"
+ *       404:
+ *         description: Customer not found.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 Error:
+ *                   type: string
+ *                   example: "Customer not found"
+ *       500:
+ *         description: Server error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 Error:
+ *                   type: string
+ *                   example: "Server error"
+ */
+
 
 app.delete("/customer/:id", verifyUser, verifyAdmin, async (req, res) => {
   try {
@@ -593,6 +1302,58 @@ customer_name:customerName
   }
 });
 
+
+/**
+ * @swagger
+ * /customers:
+ *   get:
+ *     summary: Get all customers.
+ *     description: Fetch a list of all customers. Requires admin privileges.
+ *     tags:
+ *       - Customers
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of all customers.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: integer
+ *                     example: 1
+ *                   name:
+ *                     type: string
+ *                     example: "John Doe"
+ *                   email:
+ *                     type: string
+ *                     example: "john.doe@example.com"
+ *       404:
+ *         description: No customers found.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 Error:
+ *                   type: string
+ *                   example: "No customers found"
+ *       500:
+ *         description: Server error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 Error:
+ *                   type: string
+ *                   example: "Server error"
+ */
+
 app.get("/customers", verifyUser, verifyAdmin, async (req, res) => {
   try {
     const customers = await User.findAll({
@@ -612,6 +1373,80 @@ app.get("/customers", verifyUser, verifyAdmin, async (req, res) => {
 });
 
 //Customer services fetch:
+
+/**
+ * @swagger
+ * /customer/{customer_id}:
+ *   get:
+ *     summary: Get customer details and their enrolled services.
+ *     description: Fetch detailed information for a customer including their enrolled services and associated plans. Requires authentication.
+ *     tags:
+ *       - Customers
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: customer_id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *           example: 123
+ *     responses:
+ *       200:
+ *         description: Customer details and enrolled services successfully retrieved.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: integer
+ *                   example: 123
+ *                 name:
+ *                   type: string
+ *                   example: "John Doe"
+ *                 email:
+ *                   type: string
+ *                   example: "john.doe@example.com"
+ *                 services_enrolled:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       service_id:
+ *                         type: integer
+ *                         example: 1
+ *                       service_name:
+ *                         type: string
+ *                         example: "Broadband"
+ *                       plan:
+ *                         type: string
+ *                         example: "Pro"
+ *                       features:
+ *                         type: string
+ *                         example: "High-speed internet, unlimited data"
+ *       404:
+ *         description: Customer not found.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 Error:
+ *                   type: string
+ *                   example: "Customer not found"
+ *       500:
+ *         description: Server error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 Error:
+ *                   type: string
+ *                   example: "Error fetching customer details"
+ */
+
 app.get("/customer/:customer_id", async (req, res) => {
   try {
     const { customer_id } = req.params;
@@ -655,6 +1490,62 @@ app.get("/customer/:customer_id", async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /customer-service/{customer_id}/service/{service_id}:
+ *   get:
+ *     summary: Get current plan for a customer's service.
+ *     description: Fetch the current plan details for a specific service that a customer is enrolled in.
+ *     tags:
+ *       - Customer Services
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: customer_id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *           example: 123
+ *       - in: path
+ *         name: service_id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *           example: 1
+ *     responses:
+ *       200:
+ *         description: Current plan details retrieved successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 plan_name:
+ *                   type: string
+ *                   example: "Pro"
+ *       404:
+ *         description: Service not found for this customer.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 Error:
+ *                   type: string
+ *                   example: "Service not found for this customer"
+ *       500:
+ *         description: Server error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 Error:
+ *                   type: string
+ *                   example: "Failed to fetch current plan"
+ */
+
 app.get(
   "/customer-service/:customer_id/service/:service_id",
   async (req, res) => {
@@ -675,6 +1566,71 @@ app.get(
   }
 );
 
+/**
+ * @swagger
+ * /customer-service/update:
+ *   put:
+ *     summary: Update a customer's service plan.
+ *     description: Update the plan and features for a specific service that a customer is enrolled in.
+ *     tags:
+ *       - Customer Services
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               customer_id:
+ *                 type: integer
+ *                 example: 123
+ *               service_id:
+ *                 type: integer
+ *                 example: 1
+ *               new_plan:
+ *                 type: string
+ *                 example: "Pro-Plus"
+ *               features:
+ *                 type: string
+ *                 example: "Additional features included"
+ *     responses:
+ *       200:
+ *         description: Service plan updated successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 Status:
+ *                   type: string
+ *                   example: "Success"
+ *       400:
+ *         description: Update failed due to invalid input.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 Status:
+ *                   type: string
+ *                   example: "Failed"
+ *                 Error:
+ *                   type: string
+ *                   example: "Update failed"
+ *       500:
+ *         description: Server error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 Error:
+ *                   type: string
+ *                   example: "Failed to update service plan"
+ */
+
 app.put("/customer-service/update", async (req, res) => {
   const { customer_id, service_id, new_plan, features } = req.body;
   try {
@@ -693,6 +1649,60 @@ app.put("/customer-service/update", async (req, res) => {
     res.status(500).json({ Error: "Failed to update service plan" });
   }
 });
+/**
+ * @swagger
+ * /plans/{planId}/service/{serviceId}:
+ *   get:
+ *     tags:
+ *       - Plan
+ *     summary: Get plan features by plan ID and service ID.
+ *     description: Fetch features of a specific plan associated with a given service ID.
+ *     parameters:
+ *       - in: path
+ *         name: planId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The name of the plan.
+ *       - in: path
+ *         name: serviceId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: The ID of the service.
+ *     responses:
+ *       200:
+ *         description: Features of the requested plan.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 features:
+ *                   type: string
+ *                   example: "Includes unlimited data and free calls"
+ *       404:
+ *         description: Plan not found for the specified service.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Plan not found for the specified service"
+ *       500:
+ *         description: Internal server error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Internal server error"
+ */
+
 
 app.get("/plans/:planId/service/:serviceId", async (req, res) => {
   try {
@@ -719,8 +1729,54 @@ app.get("/plans/:planId/service/:serviceId", async (req, res) => {
   }
 });
 
-//Termiate
-// Route to archive a service
+
+/**
+ * @swagger
+ * /archive:
+ *   post:
+ *     tags:
+ *       - Archive
+ *     summary: Archive a service for a customer.
+ *     description: Moves a specified service of a customer to the archive.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               customer_id:
+ *                 type: integer
+ *                 description: ID of the customer whose service is to be archived.
+ *               service_id:
+ *                 type: integer
+ *                 description: ID of the service to be archived.
+ *     responses:
+ *       200:
+ *         description: Service archived successfully.
+ *       404:
+ *         description: Service or customer not found.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 Error:
+ *                   type: string
+ *                   example: "Service not found for this customer"
+ *       500:
+ *         description: Internal server error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 Error:
+ *                   type: string
+ *                   example: "Error archiving service"
+ */
+
+
 app.post("/archive", verifyUser, async (req, res) => {
   try {
     const { customer_id, service_id } = req.body;
@@ -756,7 +1812,39 @@ app.post("/archive", verifyUser, async (req, res) => {
   }
 });
 
-// Route to delete a service from CustomerService table
+/**
+ * @swagger
+ * /customer-services/{service_id}:
+ *   delete:
+ *     tags:
+ *       - Customer Services
+ *     summary: Delete a service from the customer service list.
+ *     description: Deletes a service entry from the CustomerService table based on the provided service ID.
+ *     parameters:
+ *       - in: path
+ *         name: service_id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: The ID of the service to be deleted.
+ *     responses:
+ *       200:
+ *         description: Service deleted successfully.
+ *       404:
+ *         description: Service not found.
+ *       500:
+ *         description: Internal server error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 Error:
+ *                   type: string
+ *                   example: "Error deleting service"
+ */
+
+
 app.delete("/customer-services/:service_id", verifyUser, async (req, res) => {
   try {
     const { service_id } = req.params;
@@ -776,6 +1864,51 @@ app.delete("/customer-services/:service_id", verifyUser, async (req, res) => {
     return res.status(500).json({ Error: "Error deleting service" });
   }
 });
+/**
+ * @swagger
+ * /archives:
+ *   get:
+ *     tags:
+ *       - Archive
+ *     summary: Get all archived services.
+ *     description: Fetches a list of all archived services from the Archive table.
+ *     responses:
+ *       200:
+ *         description: List of archived services.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   customer_id:
+ *                     type: integer
+ *                     description: The ID of the customer.
+ *                   customer_name:
+ *                     type: string
+ *                     description: The name of the customer.
+ *                   service_id:
+ *                     type: integer
+ *                     description: The ID of the service.
+ *                   plan_name:
+ *                     type: string
+ *                     description: The name of the plan.
+ *                   features:
+ *                     type: string
+ *                     description: The features of the service.
+ *       500:
+ *         description: Internal server error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Failed to fetch archive data"
+ */
+
 
 app.get("/archives", async (req, res) => {
   try {
@@ -797,3 +1930,8 @@ app.listen(8081, () => {
     })
     .catch((err) => console.error("Error creating tables:", err));
 });
+
+
+
+
+
