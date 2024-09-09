@@ -4,7 +4,7 @@ import { sequelize, User, Service, Plan, CustomerService, Archive } from './mode
 import bcrypt from 'bcrypt';
 
 const saltRounds = 10; // Or use your configured salt rounds
-
+jest.setTimeout(5000);
 describe('Sequelize Models & API Test', () => {
   let adminToken = ''; // Variable to store the admin authentication token
   let customerToken = ''; // Variable to store the customer authentication token
@@ -34,8 +34,8 @@ describe('Sequelize Models & API Test', () => {
 
   const insertTestData = async () => {
     try {
-      const admin123 = await bcrypt.hash('admin123', saltRounds); // Hash the password for consistency
-      const customerPassword = await bcrypt.hash('password123', saltRounds); // Hash the password for consistency
+      const admin123 = await bcrypt.hash('admin', saltRounds); // Hash the password for consistency
+      const customerPassword = await bcrypt.hash('password', saltRounds); // Hash the password for consistency
 
       const admin = await User.findOne({ 
         where: { email: 'admin@example.com' }
