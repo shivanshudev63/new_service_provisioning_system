@@ -107,6 +107,9 @@ const AdminHome = () => {
         <Link to="/archive">
           <button className="archive-button">View Archived Services</button>
         </Link>
+        <Link to="/registeradmin">
+            <button className="archive-button">Register a new Admin</button>
+          </Link>
       </div>
       
       <div className="available-services-box">
@@ -124,7 +127,7 @@ const AdminHome = () => {
           {Array.isArray(requests) && requests.length > 0 ? (
             requests.map(request => (
               <li key={request.id}>
-                <span >Customer ID: {request.customer_id} | Service ID: {request.service_id} | Plan: {request.plan} | Feature: {request.features}</span>
+                <span >Customer ID: {request.customer_id} | Service ID: {request.service_id} | Plan: {request.plan} | Feature: {request.features} | Type: {request.request_type}</span>
                <br/> <button className="approve-btn" onClick={() => approveRequest(request.id)}>Approve</button>
                 <button className="reject-btn" onClick={() => rejectRequest(request.id)}>Reject</button>
               </li>

@@ -124,7 +124,7 @@ app.post("/register", async (req, res) => {
       name: req.body.name,
       email: req.body.email,
       password: hash,
-      role: "customer", // Automatically assign 'customer' role
+      role: req.body.role, // Automatically assign 'customer' role
     });
     return res.json({ Status: "Success" });
   } catch (err) {
@@ -545,6 +545,7 @@ app.get("/requests", async (req, res) => {
     return res.status(500).json({ Error: "Error fetching requests" });
   }
 });
+
 
 app.delete("/customer/:id", verifyUser, verifyAdmin, async (req, res) => {
   try {

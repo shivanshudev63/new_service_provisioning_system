@@ -8,7 +8,7 @@ const createAdmin = async () => {
     try {
         await sequelize.authenticate();
 
-        const hashedPassword = await bcrypt.hash('admin', saltRounds);
+        const hashedPassword = await bcrypt.hash('Admin@123', saltRounds);
 
         await User.create({
             name: 'Admin',

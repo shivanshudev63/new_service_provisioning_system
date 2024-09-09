@@ -9,6 +9,7 @@ import Configure from "./Pages/Configure";
 import Enroll from "./Pages/Enroll";
 import Terminate from "./Pages/Terminate";
 import ArchiveTable from "./Pages/ArchiveData";
+import RegisterAdmin from "./Authentication/RegisterAdmin";
 import React from "react";
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
         <Route path="/terminate-service" element={<Terminate />}></Route>
         <Route path="/configure-service" element={<Configure />}></Route>
         <Route path="/archive" element={<ArchiveTable />}></Route>
+        <Route path="/registeradmin" element={<RegisterAdmin />}></Route>
       </Routes>
     </BrowserRouter>
   );
