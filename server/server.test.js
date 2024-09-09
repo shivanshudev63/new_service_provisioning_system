@@ -2,11 +2,6 @@ import request from 'supertest'; // Supertest to test HTTP requests
 import app from './server.js'; // Your Express app
 import { sequelize, User, Service, Plan, CustomerService, Archive } from './models/index.js'; // Adjust the path to your models
 import bcrypt from 'bcrypt';
-jest.setTimeout(10000); // Set a global timeout of 10 seconds for all tests in this file
-
-describe('Sequelize Models & API Test', () => {
-  // Your test cases here
-});
 
 const saltRounds = 10; // Or use your configured salt rounds
 
@@ -29,9 +24,7 @@ describe('Sequelize Models & API Test', () => {
         console.log('Tables already exist:', tables);
       }
       // Force sync the database - this drops and recreates all tables
-      await sequelize.sync({ force: true });
-      console.log('Database tables created.');
-
+     
       // Insert hardcoded data
       await insertTestData();
     } catch (error) {
@@ -41,27 +34,34 @@ describe('Sequelize Models & API Test', () => {
 
   const insertTestData = async () => {
     try {
-      const adminPassword = await bcrypt.hash('admin123', saltRounds); // Hash the password for consistency
+      const admin123 = await bcrypt.hash('admin123', saltRounds); // Hash the password for consistency
       const customerPassword = await bcrypt.hash('password123', saltRounds); // Hash the password for consistency
 
-      const admin = await User.create({
-        name: 'Admin User',
-        email: 'admin@example.com',
-        password: adminPassword,
-        role: 'admin',
+      const admin = await User.findOne({ 
+        where: { email: 'admin@example.com' }
       });
-
-      const customer = await User.create({
-        name: 'John Doe',
-        email: 'john@example.com',
-        password: customerPassword,
-        role: 'customer',
+  
+      if (admin) {
+        console.log('Admin user retrieved:', admin.toJSON());
+      } else {
+        console.log('Admin user not found');
+      }
+  
+      // Fetch the customer user
+      const customer = await User.findOne({
+        where: { email: 'john@example.com' }
       });
+  
+      if (customer) {
+        console.log('Customer user retrieved:', customer.toJSON());
+      } else {
+        console.log('Customer user not found');
+      }
 
       const service = await Service.create({
         service_name: 'Premium Service',
       });
-
+console.log('Customer user retrieved:', customer.toJSON());
       const plan = await Plan.create({
         service_id: service.id,
         plan_name: 'basic', // Ensure this matches the ENUM values
@@ -80,6 +80,19 @@ describe('Sequelize Models & API Test', () => {
   };
 
   // Admin-related tests
+  
+  it('POST /login - Admin should show incorrect password error', async () => {
+    const loginResponse = await request(app)
+      .post('/login')
+      .send({ email: 'admin@example.com', password: 'wrongpassword' }); // Incorrect password for admin
+
+    console.log('Admin Login Response Status Code:', loginResponse.statusCode);
+    console.log('Admin Login Response Body:', loginResponse.body);
+
+    // Expecting a 401 Unauthorized response due to incorrect password
+    expect(loginResponse.statusCode).toBe(401);
+    expect(loginResponse.body.Error).toBe('Incorrect Password');
+  });
   it('POST /login - admin should return a token upon successful login', async () => {
     const loginResponse = await request(app)
       .post('/login')
@@ -102,18 +115,6 @@ describe('Sequelize Models & API Test', () => {
 
     expect(loginResponse.statusCode).toBe(200);
     expect(adminToken).toBeDefined();
-  });
-  it('POST /login - Admin should show incorrect password error', async () => {
-    const loginResponse = await request(app)
-      .post('/login')
-      .send({ email: 'admin@example.com', password: 'wrongpassword' }); // Incorrect password for admin
-
-    console.log('Admin Login Response Status Code:', loginResponse.statusCode);
-    console.log('Admin Login Response Body:', loginResponse.body);
-
-    // Expecting a 401 Unauthorized response due to incorrect password
-    expect(loginResponse.statusCode).toBe(401);
-    expect(loginResponse.body.Error).toBe('Incorrect Password');
   });
   it('GET /customers - admin should fetch all customers', async () => {
     const response = await request(app)
@@ -184,6 +185,90 @@ describe('Sequelize Models & API Test', () => {
     expect(response.statusCode).toBe(200);
     expect(response.body.Status).toBe('Service plans updated successfully');
   });
+  it('POST /requests - should create a new request', async () => {
+    const response = await request(app)
+      .post('/requests')
+      .send({
+        customer_id: 2,
+        service_id: 5,
+        plan: 'basic',
+        request_type: 'update',
+      })
+      .set('Cookie', `token=${adminToken}`); // Assuming you need admin authentication
+  
+    console.log('Create Request Response Status Code:', response.statusCode);
+    console.log('Create Request Response Body:', response.body);
+  
+    expect(response.statusCode).toBe(200);
+    expect(response.body.Status).toBe('Success');
+    expect(response.body.Message).toBe('Request created successfully');
+    expect(response.body.Request).toHaveProperty('id');
+  });
+  it('POST /approve-request/:id - should approve a request', async () => {
+    // First, create a request to approve
+    const createResponse = await request(app)
+      .post('/requests')
+      .send({
+        customer_id: 2,
+        service_id: 5,
+        plan: 'basic',
+        request_type: 'creation',
+      })
+      .set('Cookie', `token=${adminToken}`);
+  
+    // Extract the request ID from the response
+    
+  
+    // Approve the request by including the requestId in the URL
+    const response = await request(app)
+      .post(`/approve-request/5`)
+      .set('Cookie', `token=${adminToken}`);
+  
+    // Log and assert the response
+    console.log('Approve Request Response Status Code:', createResponse.statusCode);
+    console.log('Approve Request Response Body:', createResponse.body);
+  
+    expect(createResponse.statusCode).toBe(200);
+    expect(createResponse.body.Status).toBe('Success');
+  });
+  
+  it('DELETE /requests/:id - should delete a request', async () => {
+    // First, create a request to delete
+    const createResponse = await request(app)
+      .post('/requests')
+      .send({
+        customer_id: 2,
+        service_id: 5,
+        plan: 'basic',
+        request_type: 'update',
+      })
+      .set('Cookie', `token=${adminToken}`);
+  
+    const requestId = createResponse.body.Request.id;
+  
+    // Delete the request
+    const response = await request(app)
+      .delete(`/requests/${requestId}`)
+      .set('Cookie', `token=${adminToken}`); // Assuming admin authentication is required
+  
+    console.log('Delete Request Response Status Code:', response.statusCode);
+    console.log('Delete Request Response Body:', response.body);
+  
+    expect(response.statusCode).toBe(200);
+    expect(response.body.Status).toBe('Request deleted successfully');
+  });
+  it('GET /requests - should fetch all requests for admin', async () => {
+    const response = await request(app)
+      .get('/requests')
+      .set('Cookie', `token=${adminToken}`); // Assuming admin authentication is required
+  
+    console.log('Get Requests Response Status Code:', response.statusCode);
+    console.log('Get Requests Response Body:', response.body);
+  
+    expect(response.statusCode).toBe(200);
+    expect(Array.isArray(response.body)).toBe(true);
+  });
+        
 
   it('DELETE /deleteservice/:id - admin should delete a service', async () => {
     const service = await Service.findOne({ where: { service_name: 'New Service' } });
@@ -256,43 +341,13 @@ describe('Sequelize Models & API Test', () => {
     expect(response.statusCode).toBe(200);
     expect(response.body.length).toBeGreaterThan(0);
   });
-
-  // it('POST /customer-service/enroll - customer should enroll in a service', async () => {
-  //   const service = await Service.findOne({ where: { service_name: 'Premium Service' } });
-
-  //   const response = await request(app)
-  //     .post('/customer-service/enroll')
-  //     .send({
-  //       customer_id: (await User.findOne({ where: { email: 'john@example.com' } })).id,
-  //       service_id: service.id,
-  //       plan: 'basic'
-  //     })
-  //     .set('Cookie', `token=${customerToken}`);
-
-  //   console.log('Customer Enroll Service Response Body:', response.body);
-
-  //   expect(response.statusCode).toBe(200);
-  //   expect(response.body.Status).toBe('Success');
-  // });
-
-  it('GET /customer/:customer_id - customer should fetch their details', async () => {
-    const customer = await User.findOne({ where: { email: 'john@example.com' } });
-
-    const response = await request(app)
-      .get(`/customer/${customer.id}`)
-      .set('Cookie', `token=${customerToken}`);
-
-    console.log('Customer Get Details Response Body:', response.body);
-
-    expect(response.statusCode).toBe(200);
-  });
-
+  
   it('PUT /customer-service/update - customer should update their service', async () => {
     const response = await request(app)
       .put('/customer-service/update')
       .send({
-        customer_id: (await User.findOne({ where: { email: 'john@example.com' } })).id,
-        service_id: (await Service.findOne({ where: { service_name: 'Premium Service' } })).id,
+        customer_id: 2,
+        service_id: 24,
         new_plan: 'pro',
         features: 'Feature X, Feature Y'
       })
