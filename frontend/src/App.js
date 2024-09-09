@@ -9,6 +9,7 @@ import Configure from "./Pages/Configure";
 import Enroll from "./Pages/Enroll";
 import Terminate from "./Pages/Terminate";
 import ArchiveTable from "./Pages/ArchiveData";
+import React from "react";
 function App() {
   return (
     <BrowserRouter>
