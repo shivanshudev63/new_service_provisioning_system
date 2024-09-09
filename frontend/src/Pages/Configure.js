@@ -141,6 +141,7 @@ axios.post('http://localhost:8081/requests', updatedService)
 .then(res => {
   if (res.data.Status === "Success") {
     alert('Request sent to the admin successfully!');
+    navigate(`/?customer_id=${customer_id}`);
   } else {
     alert('Failed to send request.');
   }

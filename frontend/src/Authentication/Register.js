@@ -15,6 +15,14 @@ const Register = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+
+    // Check if the password is exactly 6 digits
+    const passwordRegex = /^\d{6}$/;
+    if (!passwordRegex.test(formData.password)) {
+      alert("Password must be exactly 6 digits.");
+      return;
+    }
+
     // Handle form submission logic here, e.g., send data to an API
     axios.post('http://localhost:8081/register', formData)
       .then(res => {

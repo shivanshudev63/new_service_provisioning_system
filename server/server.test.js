@@ -4,7 +4,6 @@ import { sequelize, User, Service, Plan, CustomerService, Archive } from './mode
 import bcrypt from 'bcrypt';
 
 const saltRounds = 10; // Or use your configured salt rounds
-jest.setTimeout(5000);
 describe('Sequelize Models & API Test', () => {
   let adminToken = ''; // Variable to store the admin authentication token
   let customerToken = ''; // Variable to store the customer authentication token
@@ -374,6 +373,7 @@ console.log('Customer user retrieved:', customer.toJSON());
   afterAll(async () => {
     try {
       await sequelize.close();
+      await app.close();
       console.log('Database connection closed.');
     } catch (error) {
       console.error('Error closing the database connection:', error);
