@@ -2,6 +2,11 @@ import request from 'supertest'; // Supertest to test HTTP requests
 import app from './server.js'; // Your Express app
 import { sequelize, User, Service, Plan, CustomerService, Archive } from './models/index.js'; // Adjust the path to your models
 import bcrypt from 'bcrypt';
+jest.setTimeout(10000); // Set a global timeout of 10 seconds for all tests in this file
+
+describe('Sequelize Models & API Test', () => {
+  // Your test cases here
+});
 
 const saltRounds = 10; // Or use your configured salt rounds
 
