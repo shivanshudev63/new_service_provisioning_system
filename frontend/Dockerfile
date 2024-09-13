@@ -25,9 +25,6 @@ RUN npm run build
 # Stage 2: Use a lightweight web server to serve the frontend
 FROM nginx:alpine
 
-# Create a non-root user and switch to it
-RUN addgroup -S nginx && adduser -S nginx -G nginx
-USER nginx
 
 # Copy the build files from the previous stage to the Nginx web server directory
 COPY --from=build /usr/src/app/build /usr/share/nginx/html
