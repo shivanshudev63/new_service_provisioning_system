@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 
 // Load environment variables from .env file
 dotenv.config();
-
+const createdDate = new Date().toLocaleDateString();
 // Function to send an email with OTP
 const transporter = nodemailer.createTransport({
   
@@ -27,7 +27,16 @@ const transporter = nodemailer.createTransport({
       from: process.env.EMAIL_USER,
       to: email,
       subject: 'Service Enrollment Confirmation',
-      text: `Dear Customer,\n\nYour service ${serviceName} has been successfully created under the plan ${planName}.\n\nThank you for choosing us!\n\nBest regards,\nYour Company Name`
+      text: `Dear Customer,
+
+      Your service "${serviceName}" has been successfully activated under the plan "${planName}".
+      
+      Service Activation Date: ${createdDate}
+      
+      Thank you for choosing us!
+      
+      Best regards,
+      Your Company Name`    
     };
   
     transporter.sendMail(mailOptions, (error, info) => {
