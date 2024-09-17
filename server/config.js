@@ -1,10 +1,9 @@
-// config.js
 const config = {
   development: {
     database: 'sps',
     username: 'root',
     password: 'Itone@123',
-    host: 'localhost',
+    host: 'localhost',  // This is for local development
     dialect: 'mysql'
   },
   test: {
@@ -19,10 +18,9 @@ const config = {
     database: 'sps_prod',
     username: 'root',
     password: 'Itone@123',
-    host: 'localhost',
+    host: process.env.DB_HOST || 'host.docker.internal', // Use 'host.docker.internal' or Docker service name for production
     dialect: 'mysql'
   }
 };
 
 export default config[process.env.NODE_ENV || 'development'];
-

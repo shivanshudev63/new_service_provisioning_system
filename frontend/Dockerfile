@@ -1,5 +1,5 @@
-# Use an official Node.js runtime as a base image to build the React app
-FROM node:14 AS build
+# Use an official Node.js runtime as a base image
+FROM node:14
 
 # Set the working directory inside the container
 WORKDIR /usr/src/app
@@ -16,21 +16,11 @@ ENV NODE_TLS_REJECT_UNAUTHORIZED=0
 # Install dependencies
 RUN npm install
 
-# Copy the rest of the application code
+# Copy the application code
 COPY . .
 
-# Build the React app for production
-RUN npm run build
+# Expose the port the app runs on
+EXPOSE 3000
 
-# Stage 2: Use a lightweight web server to serve the frontend
-FROM nginx:alpine
-
-
-# Copy the build files from the previous stage to the Nginx web server directory
-COPY --from=build /usr/src/app/build /usr/share/nginx/html
-
-# Expose the port that Nginx will run on
-EXPOSE 80
-
-# Start the Nginx server
-CMD ["nginx", "-g", "daemon off;"]
+# Start the React development server
+CMD ["npm", "start"]

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import './Register.css';  // Import the CSS file for styling
 import companyLogo from './logo.png';  // Import the company logo
+import axios from 'axios';
  
 const RegisterAdmin = () => {
   const [formData, setFormData] = useState({
