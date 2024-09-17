@@ -5,6 +5,7 @@ import bcrypt from "bcrypt";
 import cookieParser from "cookie-parser";
 import User from "./models/User.js";
 import Request from "./models/Request.js";
+import sendConfirmationEmail from "./mail.js";
 import {
   sequelize,
   Service,
@@ -35,6 +36,7 @@ const swaggerOptions = {
   },
   apis: ['./server.js'], // files containing annotations as above
 };
+
 const app = express();
 app.use(express.json());
 app.use(
@@ -505,7 +507,13 @@ app.post("/approve-request/:id", async (req, res) => {
           plan_name: request.plan,
           features: request.features,
         });
+        const customer = await User.findByPk(request.customer_id);
+        const service1 = await Service.findByPk(request.service_id);
 
+        // Send confirmation email
+        if (customer && service1) {
+          sendConfirmationEmail(customer.email, service1.service_name, request.plan);
+        }
         await Request.destroy({ where: { id: requestId } });
         return res.json({
           Status: "Success",
