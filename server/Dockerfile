@@ -17,7 +17,7 @@ RUN npm install
 
 # Copy the application source code
 COPY . .
-
+RUN ls -la /usr/src/app
 # Expose the port the app runs on (assuming the server runs on port 8081)
 EXPOSE 8081
 
