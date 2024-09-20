@@ -75,14 +75,15 @@ const CreateService = () => {
     };
 
     return (
-        <div className="create-service-box1">
-            <form onSubmit={handleSubmit}>
+        <div className="create-service-box">
+            <form className='create-service-form' onSubmit={handleSubmit}>
                 <div>
-                    <label>Service Name:</label>
-                    <input
+                    <label className='create-service-label'>Service Name:</label>
+                    <input 
                         type="text"
                         name="service_name"
                         value={serviceName}
+                        className='create-form-input'
                         onChange={(e) => setServiceName(e.target.value)}
                         required
                     />
@@ -90,10 +91,11 @@ const CreateService = () => {
 
                 {plans.map((plan, index) => (
                     <div key={index} className="plan-box">
-                        <label>Plan Type:</label>
+                        <label className='create-service-label'>Plan Type:</label>
                         <select
                             name="plan_name"
                             value={plan.plan_name}
+                            className='plan-type-select'
                             onChange={(e) => handlePlanChange(index, e)}
                             required
                         >
@@ -104,21 +106,22 @@ const CreateService = () => {
                             ))}
                         </select>
 
-                        <label>Features:</label>
+                        <label className='create-service-label'>Features:</label>
                         <input
                             type="text"
                             name="features"
                             value={plan.features}
+                           className='create-form-input'
                             onChange={(e) => handlePlanChange(index, e)}
                             required
                         />
 
-                        <button type="button" onClick={() => handleRemovePlan(index)}>Remove Plan</button>
+                        <button type="button" className='remove-plan' onClick={() => handleRemovePlan(index)}>Remove Plan</button>
                     </div>
                 ))}
 
-                <button type="button" onClick={handleAddPlan}>Add Plan</button>
-                <button type="submit">Create Service</button>
+                <button type="button" className='add-plan' onClick={handleAddPlan}>Add Plan</button>
+                <button type="submit" className='submit-service'>Create Service</button>
 
                 {error && <p style={{ color: 'red' }}>{error}</p>}
             </form>

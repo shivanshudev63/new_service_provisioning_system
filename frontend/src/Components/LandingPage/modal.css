@@ -1,0 +1,46 @@
+/* Modal.css */
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(96, 94, 94, 0.5); /* Semi-transparent background */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1004; /* Make sure it appears on top */
+  }
+  
+  .modal-content {
+    background: white;
+    padding: 2rem;
+    border-radius: 8px;
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
+    z-index: 1005;
+  }
+  
+  .modal-actions {
+    margin-top: 1.5rem;
+  }
+  
+  .modal-btn {
+    padding: 0.5rem 1.5rem;
+    margin: 0 0.5rem;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+  .confirm-btn {
+    background-color: #28a745; /* Green for confirmation */
+    color: white;
+  }
+  
+  .cancel-btn {
+    background-color: #dc3545; /* Red for cancel */
+    color: white;
+  }
+  

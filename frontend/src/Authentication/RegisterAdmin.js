@@ -38,33 +38,39 @@ const RegisterAdmin = () => {
         <h2>Register Admin</h2>
         <form onSubmit={handleSubmit} className="register-form">
           <div className="form-group">
-            <label>Name of the Admin:</label>
+            {/* <label>Name of the Admin:</label> */}
             <input
               type="text"
               name="name"
               value={formData.name}
+              placeholder='Name of admin'
+              className='form-input'
               onChange={e => setFormData({ ...formData, name: e.target.value })}
               required
             />
           </div>
  
           <div className="form-group">
-            <label>Email:</label>
+            {/* <label>Email:</label> */}
             <input
               type="email"
               name="email"
               value={formData.email}
+              placeholder='email'
+              className='form-input'
               onChange={e => setFormData({ ...formData, email: e.target.value })}
               required
             />
           </div>
  
           <div className="form-group">
-            <label>Password:</label>
+            {/* <label>Password:</label> */}
             <input
               type="password"
               name="password"
               value={formData.password}
+              placeholder='password'
+              className='form-input'
               onChange={e => setFormData({ ...formData, password: e.target.value })}
               required
             />

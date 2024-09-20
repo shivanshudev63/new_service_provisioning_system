@@ -1,66 +1,109 @@
+/* CreateService.css */
 
-.create-service-box1 {
-
-    padding: 20px;
-  
-    margin-bottom: 20px;
-    width: 100%;
+.create-service-box {
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    padding: 30px;
     max-width: 600px;
-    margin-left: auto;
-    margin-right: auto;
+    margin: 0 auto;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-.create-service-box h2 {
-    font-size: 25px;
+.create-service-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+create-service-label {
     font-weight: bold;
+    color: #333;
     margin-bottom: 5px;
 }
 
-.create-service-box div {
-    margin-bottom: 20px;
-}
-
-.create-service-box label {
-    display: block;
-    margin-bottom: 5px;
-    margin-top:10px;
-    font-weight: bold;
-}
-
-.create-service-box input,
-.create-service-box select {
-    width: 30rem;
+.create-form-input,
+.plan-type-select
+{
+    width: 100%;
     padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-bottom: 10px;
+    outline: none;
+    transition: border 0.3s ease;
+    background-color: white;
+}
+
+.create-form-input:focus,
+.plan-type-select:focus {
+    border: 1px solid #007bff;
+}
+
+.plan-box {
+    background-color: #f1f1f1;
+    padding: 15px;
     border-radius: 8px;
-    border: 1px solid rgba(255, 255, 255, 0.125);
-    background: transparent;
-    color:white;
+    margin-bottom: 15px;
 }
-.create-service-box option{
-    color:black;
+
+.plan-box label {
+    margin-right: 10px;
 }
-.create-service-box button {
-    margin-top: 10px;
-    margin-right: 15px;
-    padding: 8px 16px;
+
+.plan-box select,
+.plan-box input {
+    margin-right: 10px;
+}
+
+/* button {
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: white;
     border: none;
-    border-radius: 8px;
+    border-radius: 5px;
     cursor: pointer;
-    font-size: 14px;
-    transition: background-color 0.3s, transform 0.3s;
-    background-color: #2196f3;
+    transition: background-color 0.3s ease;
 }
 
-.create-service-box button:hover {
-    transform: scale(1.05);
+button:hover {
+    background-color: #0056b3;
+} */
+
+.remove-plan, 
+.add-plan {
+    background-color: #007bff;
+    margin-left: 10px;
+    border-radius: 20px;
+
+    padding: 10px 15px;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
-.create-service-box .plan-box {
-    border-bottom: 1px solid rgb(67, 66, 66); /* Thin line separator */
-    padding-bottom: 20px;
-    margin-bottom: 20px;
+.remove-plan:hover,
+.add-plan {
+    background-color: #0056b3;
 }
 
-.create-service-box .plan-box:last-child {
-    border-bottom: none; /* Remove the bottom border for the last plan */
+.submit-service {
+    margin-top: 10px;
+    background-color: #28a745;
+    border-radius: 20px;
+    margin-left: 10px;
+
+    padding: 10px 15px;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+
 }
+
+.submit-service:hover {
+    background-color: #218838;
+}
+
+

@@ -33,10 +33,15 @@ const Request = sequelize.define('Request', {
         type: DataTypes.STRING, // e.g., 'creation', 'update', 'termination'
         allowNull: false,
     },
+    feedback: {
+        type: DataTypes.STRING,
+        allowNull: true, // Optional field
+    },
     status: {
         type: DataTypes.STRING,
         defaultValue: 'pending',
     },
+   
 }, {
     timestamps: false // Disable createdAt and updatedAt
 });

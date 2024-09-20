@@ -10,7 +10,10 @@ import Enroll from "./Pages/Enroll";
 import Terminate from "./Pages/Terminate";
 import ArchiveTable from "./Pages/ArchiveData";
 import RegisterAdmin from "./Authentication/RegisterAdmin";
+import 'bootstrap/dist/css/bootstrap.min.css';
 import React from "react";
+import AboutUs from "./Components/LandingPage/Aboutus";
+import ContactPage from "./Components/LandingPage/Contactus";
 function App() {
   return (
     <BrowserRouter>
@@ -24,6 +27,10 @@ function App() {
         <Route path="/terminate-service" element={<Terminate />}></Route>
         <Route path="/configure-service" element={<Configure />}></Route>
         <Route path="/archive" element={<ArchiveTable />}></Route>
+        <Route path="/aboutus" element={<AboutUs />}></Route>
+        <Route path="/contactus" element={<ContactPage />}></Route>
+
+
         <Route path="/registeradmin" element={<RegisterAdmin />}></Route>
       </Routes>
     </BrowserRouter>

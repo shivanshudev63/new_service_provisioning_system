@@ -44,33 +44,39 @@ const Register = () => {
         <h2>Register</h2>
         <form onSubmit={handleSubmit} className="register-form">
           <div className="form-group">
-            <label>Name:</label>
+            {/* <label>Name:</label> */}
             <input 
               type="text" 
+              placeholder='Name'
               name="name" 
               value={formData.name} 
+               className="form-input"
               onChange={e => setFormData({ ...formData, name: e.target.value })} 
               required 
             />
           </div>
 
           <div className="form-group">
-            <label>Email:</label>
+            {/* <label>Email:</label> */}
             <input 
               type="email" 
+              placeholder='email'
               name="email" 
-              value={formData.email} 
+              value={formData.email}
+              className="form-input" 
               onChange={e => setFormData({ ...formData, email: e.target.value })} 
               required 
             />
           </div>
 
           <div className="form-group">
-            <label>Password:</label>
+            {/* <label>Password:</label> */}
             <input 
               type="password" 
+              placeholder='password'
               name="password" 
               value={formData.password} 
+               className="form-input"
               onChange={e => setFormData({ ...formData, password: e.target.value })} 
               required 
             />

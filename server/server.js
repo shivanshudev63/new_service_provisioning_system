@@ -5,6 +5,7 @@ import bcrypt from "bcrypt";
 import cookieParser from "cookie-parser";
 import User from "./models/User.js";
 import Request from "./models/Request.js";
+import sendConfirmationEmail from "./mail.js";
 import {
   sequelize,
   Service,
@@ -306,13 +307,23 @@ app.delete("/deleteservice/:id", verifyUser, verifyAdmin, async (req, res) => {
 //For customer enrollment
 app.get("/services", async (req, res) => {
   try {
-    const services = await Service.findAll();
-    res.json(services);
+    // Fetch services along with associated plans
+    const services = await Service.findAll({
+      include: [
+        {
+          model: Plan, // Assuming the associated model is called 'Plan'
+          attributes: ['plan_name', 'features'] // Specify which attributes from Plan to include
+        }
+      ]
+    });
+    
+    res.json(services); // Send the result with included Plan data
   } catch (err) {
     console.error("Error fetching services:", err);
     res.status(500).json({ Error: "Failed to fetch services" });
   }
 });
+
 
 app.get("/services/:customer_id", async (req, res) => {
   try {
@@ -342,6 +353,21 @@ app.get("/services/:customer_id", async (req, res) => {
 app.get("/plans", async (req, res) => {
   try {
     const plans = await Plan.findAll();
+    res.json(plans);
+  } catch (err) {
+    console.error("Error fetching plans:", err);
+    res.status(500).json({ Error: "Failed to fetch plans" });
+  }
+});
+
+app.get("/plans/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+    const plans = await Plan.findAll({
+      where: {
+        service_id: id, // Filter plans by service_id
+      },
+    });
     res.json(plans);
   } catch (err) {
     console.error("Error fetching plans:", err);
@@ -386,7 +412,7 @@ app.post("/customer-service/enroll", verifyUser, async (req, res) => {
 
 app.post("/requests", async (req, res) => {
   try {
-    const { customer_id, service_id, plan, request_type } = req.body;
+    const { customer_id, service_id, plan, request_type, feedback } = req.body;
 
     const service = await Service.findByPk(service_id);
     const selectedPlan = await Plan.findOne({
@@ -405,8 +431,12 @@ app.post("/requests", async (req, res) => {
       service_id,
       plan,
       features: selectedPlan.features,
-      request_type, // Optional: Add features if needed
+      request_type,
+      feedback
+       // Optional: Add features if needed
     });
+
+    console.log(newRequest)
 
     return res.json({
       Status: "Success",
@@ -505,7 +535,13 @@ app.post("/approve-request/:id", async (req, res) => {
           plan_name: request.plan,
           features: request.features,
         });
+        const customer = await User.findByPk(request.customer_id);
+        const service1 = await Service.findByPk(request.service_id);
 
+        // Send confirmation email
+        if (customer && service1) {
+          sendConfirmationEmail(customer.email, service1.service_name, request.plan);
+        }
         await Request.destroy({ where: { id: requestId } });
         return res.json({
           Status: "Success",
@@ -520,6 +556,7 @@ app.post("/approve-request/:id", async (req, res) => {
     return res.status(500).json({ Error: "Error approving request" });
   }
 });
+
 
 app.delete("/requests/:id", async (req, res) => {
   try {
@@ -540,6 +577,47 @@ app.get("/requests", async (req, res) => {
   try {
     const requests = await Request.findAll();
     return res.json(requests);
+  } catch (err) {
+    console.error("Error fetching requests:", err);
+    return res.status(500).json({ Error: "Error fetching requests" });
+  }
+});
+
+
+
+app.get("/requests/:customer_id", async (req, res) => {
+  try {
+    const {customer_id} = req.params;
+    console.log(customer_id);
+    const requests = await Request.findAll(
+      {
+        where: {customer_id: customer_id},
+      include: [
+        {
+          model: Service,
+          attributes: ["service_name"], // Include service name from the Service table
+        },
+      ],
+      attributes: ["plan", "features", "service_id","status","request_type"],
+  });
+
+  if (!requests || requests.length === 0) {
+    return res.status(404).json({ Error: "No requests found" });
+  }
+
+  // Map over the requests to structure the response data
+  const responseData = requests.map(request => ({
+    customer_id: customer_id,
+    service_id: request.service_id,
+    service_name: request.Service ? request.Service.service_name : null, // Get service_name from the related Service model
+    plan: request.plan,
+    features: request.features,
+    status: request.status,
+    request_type: request.request_type
+  }));
+
+    console.log(requests);
+    return res.json(responseData);
   } catch (err) {
     console.error("Error fetching requests:", err);
     return res.status(500).json({ Error: "Error fetching requests" });

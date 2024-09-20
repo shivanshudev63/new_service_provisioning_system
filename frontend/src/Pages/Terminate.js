@@ -39,7 +39,7 @@ const Terminate = () => {
         setMessage('An error occurred during authentication.');
         navigate('/login'); // Redirect to login page on error
       });
-  }, [navigate]);
+  }, [navigate, customer_id]);
 
   const handleServiceChange = (event) => {
     setSelectedService(event.target.value);

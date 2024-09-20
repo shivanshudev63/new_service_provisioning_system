@@ -18,6 +18,10 @@ const Archive = sequelize.define('Archive', {
         type: DataTypes.STRING,
         allowNull: false
     },
+    feedback: {
+        type: DataTypes.STRING,
+        allowNull: true, // Optional field
+    },
     features: {
         type: DataTypes.TEXT,
         allowNull: true // Assuming features are optional

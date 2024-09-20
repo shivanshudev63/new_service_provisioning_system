@@ -1,19 +1,19 @@
 /* File: AdminHome.css */
-
+/* 
 .admin-container {
     display: flex;
     flex-direction: column;
     background: rgb(2,0,36); 
-    background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(2,30,89,1) 62%, rgba(3,15,107,1) 100%);
+    background: white;
     background-attachment: fixed;
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
-    color: white;
+    color: black;
     padding: 20px;
     position: relative;
-    align-items: center; /* Center items horizontally */
-}
+    align-items: center; 
+} 
 
 .admin-navbox {
     width: 100%;
@@ -23,8 +23,174 @@
     margin-bottom: 20px;
     gap: 10px;
     margin-top: 100px;
-}
+} */
 
+
+html, body {
+   background:  rgba(223, 235, 247, 0.715);
+    margin: 0;
+    padding: 0;
+    height: 100%; /* Ensure that it covers the entire page */
+  }
+
+.admin-navbar {
+    background-color: white;
+    padding: 0;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    color: white;
+    top: 0;
+    height: 10.5%;
+    width: 100%;
+    border-radius: 10px;
+    position: fixed;
+    z-index: 100;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.3);
+  }
+  
+  .admin-logo {
+    width: 120px;
+  }
+
+  .navbar-register-btn {
+    background-color: rgb(243, 181, 66);
+    color: black;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-size: 18px;
+    font-weight: 500;
+    cursor: pointer;
+    margin-right: 20px;
+  }
+
+  .navbar-register-btn:hover{
+    background-color: rgb(243, 166, 24);
+  }
+
+.admin-home-container {
+    display: flex;
+    
+    /* margin: 60px; */
+    /* z-index: 1005; */
+  }
+  
+  .dashboard {
+    width: 25%;
+    height: 100vh;
+    background-color: #bfddfd;
+    padding-bottom: 20px;
+    /* position: fixed; */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 20px;
+    position: fixed; /* Fixed position to stay in place when scrolling */
+    overflow-y: auto;
+    z-index: 105;
+    box-shadow: 5px 0 17px rgba(0, 0, 0, 0.2);
+    
+  }
+  
+  .admin-avatar {
+    width: 70px;
+    /* height: 200px; */
+    margin-bottom: 10px;
+  }
+
+  .admin-welcome{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+    width: 100%;
+    border-bottom: #41404038 solid 2px;
+
+  }
+  
+  .dashboard-buttons {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-bottom: 20px;
+    align-items: center;
+  }
+
+  .dashboard-services{
+    display: flex;
+    flex-direction: column;
+    align-items: baseline;
+    justify-content: space-evenly;
+    width: 100%;
+    padding: 10px;
+  }
+
+  .dashboard-admin-btn{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    justify-content: space-around;
+  }
+  
+  .dashboard-btn {
+    /* margin: 20px 0; */
+    width: 100%;
+    padding: 20px;
+    font-size: 20px;
+    background-color: #bfddfd;
+    color: black;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    transition: transform 0.2s ease-in-out;
+    border-radius: 10px;
+    font-weight: 500;
+
+  }
+
+  .dashboard-btn:hover{
+    background-color: #a4bdd7;
+    transform: translateY(-5px);
+
+
+  }
+
+  .notification-badge {
+    background-color: red;
+    color: white;
+    border-radius: 50%;
+    padding: 5px 10px;
+    margin-left: 8px;
+    font-size: 0.9rem;
+    font-weight: bold;
+  }
+  
+  .dashboard-logout{
+    width: 70%;
+  }
+  
+  .logout-btn {
+    background-color: #dc3545;
+    color: white;
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+  
+  .main-content {
+    flex-grow: 1;
+    padding: 0;
+    height: 100%;
+    max-width: auto;
+    /* background: rgba(223, 235, 247, 0.715); */
+    
+  }
+  
 .archive-button {
     padding: 12px 24px;
     width: 200px;
@@ -61,14 +227,21 @@
     transform: scale(1.05);
 }
 
+.actions-box{
+    padding:8% 0 0 25%;
+   background:  rgba(223, 235, 247, 0.715);
+   height: 100vh;
+
+}
+
 .service-requests-box,
 .customer-table-box,
 .customer-details {
     width: 100%;
     max-width: 600px;
-    background: rgba(17, 25, 40, 0.7);
+    background: rgba(215, 219, 228, 0.7);
     border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.125);
+    border: 1px solid rgba(26, 25, 25, 0.374);
     padding: 20px;
     backdrop-filter: blur(4px) saturate(184%);
     -webkit-backdrop-filter: blur(4px) saturate(184%);
@@ -176,15 +349,15 @@
 }
 
 .customer-table th {
-    background: rgba(17, 25, 40, 0.9);
+    background: rgba(211, 213, 216, 0.9);
 }
 
 .customer-table tr:nth-child(even) {
-    background: rgba(17, 25, 40, 0.6);
+    background:  rgba(211, 213, 216, 0.9);
 }
 
 .customer-table tr:nth-child(odd) {
-    background: rgba(17, 25, 40, 0.7);
+    background: rgba(211, 213, 216, 0.9);
 }
 
 .customer-details {
@@ -194,7 +367,7 @@
 
 .available-services-box,
 .create-service-box {
-    background: rgba(17, 25, 40, 0.7);
+    background: rgba(224, 226, 231, 0.7);
     border-radius: 12px;
     border: 1px solid rgba(255, 255, 255, 0.125);
     padding: 20px;
@@ -202,9 +375,10 @@
     -webkit-backdrop-filter: blur(4px) saturate(184%);
     margin-bottom: 20px;
     width: 100%;
-    max-width: 600px;
+    /* max-width: 600px; */
     margin-left: auto;
-    margin-right: auto; /* Center horizontally */
+    margin-right: auto;
+    color: black; /* Center horizontally */
 }
 
 .available-services-box {

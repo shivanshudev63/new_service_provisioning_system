@@ -28,8 +28,8 @@ const ArchiveTable = () => {
 
   return (
     <div className="archive-container">
-      <button className="go-back-button" onClick={handleGoBack}>Go Back</button>
-      <h2>Archived Services</h2>
+      {/* <button className="go-back-button" onClick={handleGoBack}>Go Back</button> */}
+      <h2 style={{ marginTop: '30px'}}>Archived Services</h2>
       <table className="archive-table">
         <thead>
           <tr>
@@ -38,6 +38,8 @@ const ArchiveTable = () => {
             <th>Service ID</th>
             <th>Plan Name</th>
             <th>Features</th>
+            <th>Feedback</th>
+
             <th>Archived At</th>
           </tr>
         </thead>
@@ -50,6 +52,7 @@ const ArchiveTable = () => {
                 <td>{archive.service_id}</td>
                 <td>{archive.plan_name}</td>
                 <td>{archive.features || "N/A"}</td>
+                <td>{archive.feedback || "Not Available"}</td>
                 <td>{new Date(archive.updatedAt).toLocaleString()}</td>
               </tr>
             ))
