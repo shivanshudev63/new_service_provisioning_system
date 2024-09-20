@@ -29,7 +29,7 @@ const transporter = nodemailer.createTransport({
       subject: 'Service Enrollment Confirmation',
       text: `Dear Customer,
 
-      Your service "${serviceName}" has been successfully activated under the plan "${planName}".
+      Your service ${serviceName} has been successfully activated under the plan ${planName}.
       
       Service Activation Date: ${createdDate}
       
