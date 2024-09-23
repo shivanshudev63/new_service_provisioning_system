@@ -173,7 +173,7 @@ const LandingPage = () => {
   const ConfigSectionRef = useRef(null);
   const [ConfigsidebarOpen, setConfigSidebarOpen] = useState(false);
   const [requests, setRequests] = useState([]);
-  
+  const [filteredServices, setFilteredServices] = useState([]);  
 
 
   // Extract customer_id from query parameters
@@ -199,6 +199,7 @@ const LandingPage = () => {
               .then((services) => {
                 if (services.data) {
                   setAvailableServices(services.data);
+                  
                 }
               })
               .catch((err) =>
@@ -239,6 +240,21 @@ const LandingPage = () => {
 
   }, [customer_id]);
 
+
+  useEffect(() => {
+    // When available services and customer details are fetched, filter out the services already enrolled by the customer
+    if (availableServices.length > 0 && customerDetails?.services_enrolled?.length > 0) {
+      const enrolledServiceNames = customerDetails.services_enrolled.map(service => service.service_name);
+      const filtered = availableServices.filter(service => !enrolledServiceNames.includes(service.service_name));
+
+      setFilteredServices(filtered);
+      console.log(filtered);
+    } else {
+      // If no customer services, show all available services
+     setFilteredServices(availableServices);
+    }
+  }, [availableServices, customerDetails]);
+
   useEffect(() => {
   
     // Function to determine which card is in the center
@@ -254,22 +270,26 @@ const LandingPage = () => {
       let closestDistance = Infinity;
 
       serviceCardsRef.current.forEach((card) => {
-        const cardRect = card.getBoundingClientRect();
-        const cardCenter = cardRect.left + cardRect.width / 2;
-
-        const distance = Math.abs(cardCenter - containerCenter);
-
-        if (distance < closestDistance) {
-          closestDistance = distance;
-          closestCard = card;
+        if (card) { // Check if card is not null
+          const cardRect = card.getBoundingClientRect();
+          const cardCenter = cardRect.left + cardRect.width / 2;
+    
+          const distance = Math.abs(cardCenter - containerCenter);
+    
+          if (distance < closestDistance) {
+            closestDistance = distance;
+            closestCard = card;
+          }
         }
       });
 
       // Remove the highlight from all cards and add it to the closest one
       serviceCardsRef.current.forEach((card) => {
-        card.classList.remove("highlighted");
+        if (card) { // Check if card is not null
+          card.classList.remove("highlighted");
+        }
       });
-
+    
       if (closestCard) {
         closestCard.classList.add("highlighted");
       }
@@ -442,8 +462,8 @@ const LandingPage = () => {
           <div className="dummy-card" />
 
           {/* Actual service cards */}
-          {availableServices.length > 0
-            ? availableServices.map((service, index) => (
+          {filteredServices.length > 0
+            ? filteredServices.map((service, index) => (
                 <div
                   key={service.service_name}
                   ref={(el) => (serviceCardsRef.current[index] = el)}
@@ -457,7 +477,12 @@ const LandingPage = () => {
                   <button className="enroll-btn" onClick={() => handleEnrollService(service)}>Enroll</button>
                 </div>
               ))
-            : "Loading services..."}
+            :  (
+              <div className="customer-plan-card" style={{width: '50%'}}>
+                        <h5 className="service-name">All Services Availed!</h5>
+                         
+                      </div>
+            )}
 
           {/* Dummy card at the end */}
           <div className="dummy-card" />

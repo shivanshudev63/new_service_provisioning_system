@@ -12,6 +12,8 @@ const Configuresidebar = ({ customerId, service, closeSidebar }) => {
   const [modalType, setModalType] = useState(''); // Track if it's for plan change or termination
   const [newPlan, setNewPlan] = useState(''); 
   const [feedback,setFeedback] = useState('');
+  const [features, setFeatures] = useState("");
+
 
   useEffect(() => {
     const fetchPlanDetails = async () => {
@@ -39,7 +41,35 @@ const Configuresidebar = ({ customerId, service, closeSidebar }) => {
 
   const handleActionClick = (selectedAction) => {
     setAction(selectedAction);
+
+    const currentIndex = planLevels.indexOf(currentPlan);
+    let planToChangeTo = '';
+
+    if (selectedAction === 'upgrade' && currentIndex < planLevels.length - 1) {
+      planToChangeTo = planLevels[currentIndex + 1];
+    } else if (selectedAction === 'downgrade' && currentIndex > 0) {
+      planToChangeTo = planLevels[currentIndex - 1];
+    }
+
+    setNewPlan(planToChangeTo); // Set new plan
+    fetchFeatures(newPlan);
   };
+
+
+  const fetchFeatures =  async (planId) => {
+    try {
+      const res = await axios.get(`http://localhost:8081/plans/${planId}/service/${ service.service_id}`);
+      if (res.data && res.data.features) {
+        setFeatures(res.data.features);
+        return res.data.features;
+      } else {
+        return '';
+      }
+    } catch (err) {
+      console.log('Error fetching plan features:', err);
+      return '';
+    }
+  }
 
   const openModal = (type, newPlan = '') => {
     setModalType(type);
@@ -90,6 +120,7 @@ const Configuresidebar = ({ customerId, service, closeSidebar }) => {
       try {
         const res = await axios.get(`http://localhost:8081/plans/${planId}/service/${serviceId}`);
         if (res.data && res.data.features) {
+          setFeatures(res.data.features);
           return res.data.features;
         } else {
           return '';
@@ -173,6 +204,15 @@ const Configuresidebar = ({ customerId, service, closeSidebar }) => {
           Downgrade
         </button>
       </div>
+
+
+      {features && (
+        <div className="plan-features">
+          <h5>Plan Features:</h5>
+          <p>{features}</p>
+        </div>
+      )}
+
 
       <form style={{ width: '38%' }} onSubmit={handleSubmit}>
         <button type="submit" className="enroll-service-btn">
