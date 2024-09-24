@@ -151,7 +151,7 @@ app.post("/login", async (req, res) => {
         console.log(user.id);
         return res.json({ Status: "Success", role: user.role, id: user.id });
       } else {
-        return res.status(401).json({ Error: "Incorrect Password" });
+        return res.json({ Error: "Incorrect Password" });``
       }
     } else {
       return res.json({ Error: "Unregistered user" });
@@ -463,7 +463,7 @@ app.post("/approve-request/:id", async (req, res) => {
 
     // Fetch service and user information based on the request
 
-    let updateResult;
+    let updateResult,customer,service1;
 
     switch (request.request_type) {
       case "update":
@@ -476,6 +476,14 @@ app.post("/approve-request/:id", async (req, res) => {
             },
           }
         );
+
+        customer = await User.findByPk(request.customer_id);
+        service1 = await Service.findByPk(request.service_id);
+
+        // Send confirmation email
+        if (customer && service1) {
+          sendConfirmationEmail(customer.email, service1.service_name, request.plan, "Updated");
+        }
 
         if (updateResult[0] !== 0) {
           await Request.destroy({ where: { id: requestId } });
@@ -507,6 +515,14 @@ app.post("/approve-request/:id", async (req, res) => {
         if (!name) {
           return res.status(404).json({ Error: "Customer ID not found" });
         }
+
+        customer = await User.findByPk(request.customer_id);
+        service1 = await Service.findByPk(request.service_id);
+
+        // Send confirmation email
+        if (customer && service1) {
+          sendConfirmationEmail(customer.email, service1.service_name, request.plan, "Terminated");
+        }
         await CustomerService.destroy({
           where: {
             customer_id: request.customer_id,
@@ -535,12 +551,12 @@ app.post("/approve-request/:id", async (req, res) => {
           plan_name: request.plan,
           features: request.features,
         });
-        const customer = await User.findByPk(request.customer_id);
-        const service1 = await Service.findByPk(request.service_id);
+        customer = await User.findByPk(request.customer_id);
+        service1 = await Service.findByPk(request.service_id);
 
         // Send confirmation email
         if (customer && service1) {
-          sendConfirmationEmail(customer.email, service1.service_name, request.plan);
+          sendConfirmationEmail(customer.email, service1.service_name, request.plan, "Activated");
         }
         await Request.destroy({ where: { id: requestId } });
         return res.json({
@@ -551,6 +567,8 @@ app.post("/approve-request/:id", async (req, res) => {
       default:
         return res.status(400).json({ Error: "Invalid request type" });
     }
+
+    
   } catch (err) {
     console.error("Error approving request:", err);
     return res.status(500).json({ Error: "Error approving request" });
@@ -646,7 +664,7 @@ app.delete("/customer/:id", verifyUser, verifyAdmin, async (req, res) => {
           service_id: service.service_id,
           plan_name: service.plan_name,
           features: service.features,
-customer_name:customerName
+          customer_name:customerName
         })
       )
     );
@@ -754,6 +772,14 @@ app.put("/customer-service/update", async (req, res) => {
       { where: { customer_id, service_id } }
     );
 
+    const customer = await User.findByPk(customer_id);
+    const service1 = await Service.findByPk(service_id);
+
+    if (customer_id && service1 ) {
+      
+      sendConfirmationEmail(customer.email, service1.service_name, new_plan, "Updated");
+    }
+
     if (updated === 1) {
       res.json({ Status: "Success" });
     } else {
@@ -831,12 +857,20 @@ app.post("/archive", verifyUser, async (req, res) => {
 app.delete("/customer-services/:service_id", verifyUser, async (req, res) => {
   try {
     const { service_id } = req.params;
-
+    
     // Delete the service from CustomerService table
+
+    const customer = await User.findByPk(customer_id);
+    const service1 = await Service.findByPk(service_id);
+
+    if (customer && service1) {
+      sendConfirmationEmail(customer.email, service1.service_name, request.plan, "Activated");
+    }
     const deleted = await CustomerService.destroy({
       where: { service_id: service_id },
     });
 
+   
     if (deleted) {
       return res.json({ Status: "Service deleted successfully" });
     } else {

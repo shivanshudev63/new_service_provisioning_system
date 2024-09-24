@@ -86,7 +86,7 @@ html, body {
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
-    border-radius: 20px;
+    /* border-radius: 20px; */
     position: fixed; /* Fixed position to stay in place when scrolling */
     overflow-y: auto;
     z-index: 105;
@@ -367,7 +367,7 @@ html, body {
 
 .available-services-box,
 .create-service-box {
-    background: rgba(224, 226, 231, 0.7);
+    /* background: rgba(224, 226, 231, 0.7); */
     border-radius: 12px;
     border: 1px solid rgba(255, 255, 255, 0.125);
     padding: 20px;

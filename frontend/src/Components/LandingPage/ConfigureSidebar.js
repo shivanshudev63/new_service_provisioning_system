@@ -208,8 +208,15 @@ const Configuresidebar = ({ customerId, service, closeSidebar }) => {
 
       {features && (
         <div className="plan-features">
-          <h5>Plan Features:</h5>
-          <p>{features}</p>
+         <ul>
+    {features
+      .split(";")
+      .map((feature) => feature.trim())  // Trim each feature
+      .filter((feature) => feature)      // Filter out empty features
+      .map((feature, index) => (
+        <li key={index}>{feature}</li>
+      ))}
+  </ul>
         </div>
       )}
 

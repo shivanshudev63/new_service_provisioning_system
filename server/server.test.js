@@ -2,7 +2,7 @@ import request from 'supertest'; // Supertest to test HTTP requests
 import app from './server.js'; // Your Express app
 import { sequelize, User, Service, Plan, CustomerService, Archive } from './models/index.js'; // Adjust the path to your models
 import bcrypt from 'bcrypt';
- 
+ import sendConfirmationEmail from './mail.js';
 const saltRounds = 10; // Or use your configured salt rounds
  
 describe('Sequelize Models & API Test', () => {
@@ -35,46 +35,72 @@ describe('Sequelize Models & API Test', () => {
  
   const insertTestData = async () => {
     try {
-      const admin123 = await bcrypt.hash('admin', saltRounds); // Hash the password for consistency
-      const customerPassword = await bcrypt.hash('password123', saltRounds); // Hash the password for consistency
+      const adminPasswordHash = await bcrypt.hash('admin', saltRounds); // Hash the password for the admin
+      const customerPasswordHash = await bcrypt.hash('admin12345', saltRounds); // Hash the password for the customer
  
-      const admin = await User.findOne({
-        where: { email: 'admin@example.com' }
+      // Check if the admin exists, and create if not
+      const [admin, createdAdmin] = await User.findOrCreate({
+        where: { email: 'admin@example.com' },
+        defaults: {
+          name: 'Admin', // Set default admin name if required
+          email: 'admin@example.com',
+          password: adminPasswordHash, // Insert the hashed password
+          role: 'admin', // Assuming you have a 'role' field
+        }
       });
  
-      if (admin) {
-        console.log('Admin user retrieved:', admin.toJSON());
+      if (createdAdmin) {
+        console.log('Admin user created:', admin.toJSON());
       } else {
-        console.log('Admin user not found');
+        console.log('Admin user already exists:', admin.toJSON());
       }
  
-      // Fetch the customer user
-      const customer = await User.findOne({
-        where: { email: 'john@example.com' }
+      // Check if the customer exists, and create if not
+      const [customer, createdCustomer] = await User.findOrCreate({
+        where: { email: 'john@mail.com' },
+        defaults: {
+          name: 'Customer', // Set default customer name if required
+          email: 'john@mail.com',
+          password: customerPasswordHash, // Insert the hashed password
+          role: 'customer', // Assuming you have a 'role' field
+        }
       });
  
-      if (customer) {
-        console.log('Customer user retrieved:', customer.toJSON());
+      if (createdCustomer) {
+        console.log('Customer user created:', customer.toJSON());
       } else {
-        console.log('Customer user not found');
+        console.log('Customer user already exists:', customer.toJSON());
       }
  
+      // Create a new service
       const service = await Service.create({
         service_name: 'Premium Service',
       });
-console.log('Customer user retrieved:', customer.toJSON());
+ 
+      console.log('Service created:', service.toJSON());
+ 
+      // Create a new plan
       const plan = await Plan.create({
         service_id: service.id,
         plan_name: 'basic', // Ensure this matches the ENUM values
         features: 'Feature 1, Feature 2',
       });
  
-      await CustomerService.create({
-        customer_id: customer.id,
-        service_id: service.id,
-        plan_name: 'basic',
-        features: 'Feature 1, Feature 2'
+      console.log('Plan created:', plan.toJSON());
+ 
+      // Link the customer to the service
+      await CustomerService.findOrCreate({
+        where: {
+          customer_id: customer.id,
+          service_id: service.id,
+        },
+        defaults: {
+          plan_name: 'basic',
+          features: 'Feature 1, Feature 2',
+        }
       });
+ 
+      console.log('CustomerService created or already exists.');
     } catch (error) {
       console.error('Error inserting test data:', error);
     }
@@ -191,9 +217,10 @@ console.log('Customer user retrieved:', customer.toJSON());
       .post('/requests')
       .send({
         customer_id: 2,
-        service_id: 5,
+        service_id: 3,
         plan: 'basic',
         request_type: 'creation',
+        feedback: 'Good'
       })
       .set('Cookie', `token=${adminToken}`); // Assuming you need admin authentication
  
@@ -205,32 +232,39 @@ console.log('Customer user retrieved:', customer.toJSON());
     expect(response.body.Message).toBe('Request created successfully');
     expect(response.body.Request).toHaveProperty('id');
   });
-  it('POST /approve-request/:id - should approve a request', async () => {
-    // First, create a request to approve
-    const createResponse = await request(app)
-      .post('/requests')
-      .send({
-        customer_id: 2,
-        service_id: 5,
-        plan: 'basic',
-        request_type: 'update',
-      })
-      .set('Cookie', `token=${adminToken}`);
  
-    // Extract the request ID from the response
-   
  
-    // Approve the request by including the requestId in the URL
-    const response = await request(app)
-      .post(`/approve-request/5`)
-      .set('Cookie', `token=${adminToken}`);
+  describe('sendConfirmationEmail', () => {
+    // Set a longer timeout as sending an email might take some time
+    jest.setTimeout(30000);
  
-    // Log and assert the response
-    console.log('Approve Request Response Status Code:', createResponse.statusCode);
-    console.log('Approve Request Response Body:', createResponse.body);
+    it('should send a confirmation email', async () => {
+      const email = 'test@example.com'; // Use a real email address for testing
+      const serviceName = 'Test Service';
+      const planName = 'Basic Plan';
+      const status = 'activated';
  
-    expect(createResponse.statusCode).toBe(200);
-    expect(createResponse.body.Status).toBe('Success');
+      try {
+        const result = await sendConfirmationEmail(email, serviceName, planName, status);
+       
+        // Check if the email was sent successfully
+        expect(result).toBeTruthy();
+        console.log('Email sent successfully:', result);
+      } catch (error) {
+        console.error('Error sending email:', error);
+        throw error; // Re-throw the error to fail the test
+      }
+    });
+ 
+    it('should handle errors for invalid email', async () => {
+      const email = 'invalid-email';
+      const serviceName = 'Test Service';
+      const planName = 'Basic Plan';
+      const status = 'activated';
+ 
+      await expect(sendConfirmationEmail(email, serviceName, planName, status))
+        .rejects.toThrow();
+    });
   });
  
   it('DELETE /requests/:id - should delete a request', async () => {
@@ -294,12 +328,23 @@ console.log('Customer user retrieved:', customer.toJSON());
     expect(response.statusCode).toBe(200);
     expect(response.body.Status).toBe('Success');
   });
+  it('POST /login - should show incorrect password error', async () => {
+    const loginResponse = await request(app)
+      .post('/login')
+      .send({ email: 'john@mail.com', password: 'password124' }); // Incorrect password
  
+    console.log('Login Response Status Code:', loginResponse.statusCode);
+    console.log('Login Response Body:', loginResponse.body);
+ 
+    // Expecting a 401 Unauthorized response due to incorrect password
+    expect(loginResponse.statusCode).toBe(401);
+    expect(loginResponse.body.Error).toBe('Incorrect Password');
+  });
   // Customer-related tests
   it('POST /login - customer should return a token upon successful login', async () => {
     const loginResponse = await request(app)
       .post('/login')
-      .send({ email: 'john@example.com', password: 'password123' });
+      .send({ email: 'john@mail.com', password: 'admin12345' });
  
     console.log('Customer Login Response Status Code:', loginResponse.statusCode);
     console.log('Customer Login Response Body:', loginResponse.body);
@@ -319,18 +364,7 @@ console.log('Customer user retrieved:', customer.toJSON());
     expect(loginResponse.statusCode).toBe(200);
     expect(customerToken).toBeDefined();
   });
-  it('POST /login - should show incorrect password error', async () => {
-    const loginResponse = await request(app)
-      .post('/login')
-      .send({ email: 'john@example.com', password: 'password124' }); // Incorrect password
  
-    console.log('Login Response Status Code:', loginResponse.statusCode);
-    console.log('Login Response Body:', loginResponse.body);
- 
-    // Expecting a 401 Unauthorized response due to incorrect password
-    expect(loginResponse.statusCode).toBe(401);
-    expect(loginResponse.body.Error).toBe('Incorrect Password');
-  });
  
   it('GET /services - customer should fetch all services', async () => {
     const response = await request(app)

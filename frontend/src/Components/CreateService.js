@@ -57,10 +57,15 @@ const CreateService = () => {
             return;
         }
 
+        const processedPlans = plans.map(plan => ({
+            ...plan,
+            features: plan.features.split('\n').join(';')
+        }));
+
         try {
             await axios.post('http://localhost:8081/createservice', {
                 service_name: serviceName,
-                plans
+                plans: processedPlans
             }, {
                 withCredentials: true
             });
@@ -107,12 +112,13 @@ const CreateService = () => {
                         </select>
 
                         <label className='create-service-label'>Features:</label>
-                        <input
-                            type="text"
+                        <textarea
+                           
                             name="features"
                             value={plan.features}
                            className='create-form-input'
                             onChange={(e) => handlePlanChange(index, e)}
+                            rows={5}
                             required
                         />
 

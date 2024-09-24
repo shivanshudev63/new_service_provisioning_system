@@ -81,7 +81,8 @@
   
     .form-group .input-icon {
       position: absolute;
-      left: 10px;
+      /* left: 3px; */
+      padding:11px;
       top: 50%;
       transform: translateY(-50%);
       color: #5b5a5a;
@@ -107,7 +108,7 @@
       background-color: #b247db;
       color: white;
       border: none;
-      padding: 15px 30px;
+      padding:8px 21px;
       font-size: 20px;
       font-weight: bold;
       border-radius: 5px;
@@ -124,19 +125,20 @@
     
     .create-account-link {
       text-decoration: none;
-      width: 103%;
+      width: 47vh;
     }
     
     .create-account-button {
       background-color: rgb(24 108 204);
-      color: #fff;
+      color: white;
       border: none;
-      padding: 15px 30px;
+      padding:8px 21px;
       font-size: 20px;
-      font-style: bold;
+      font-weight: bold;
       border-radius: 5px;
       cursor: pointer;
-      width: 77%;
+      width: 85%;
+      margin-bottom: 20px;
       transition: all 0.3s ease;
     }
     

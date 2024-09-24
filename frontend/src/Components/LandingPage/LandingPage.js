@@ -153,6 +153,7 @@ import banner from "../../Assets/banner.png"
 import enroll_logo from "../../Assets/enroll_logo.png"
 import "./LandingPage.css"; 
 import Sidebar from "./Sidebar";
+import Footer from "./Footer";
 import Configuresidebar from "./ConfigureSidebar";
 
 const LandingPage = () => {
@@ -181,6 +182,20 @@ const LandingPage = () => {
   const customer_id = queryParams.get("customer_id");
 
   axios.defaults.withCredentials = true;
+
+  useEffect ( () => {
+    axios
+              .get(`http://localhost:8081/services`)
+              .then((services) => {
+                if (services.data) {
+                  setAvailableServices(services.data);
+                  
+                }
+              })
+              .catch((err) =>
+                console.log("Error fetching customer details:", err)
+              );
+  },[])
 
   useEffect(() => {
     // Fetch the authentication status and user details
@@ -329,10 +344,18 @@ const LandingPage = () => {
   };
 
   const handleEnrollService = (service) => {
+    if(customerDetails){
     setSelectedService(service); // Set the selected service
-    setShowSidebar(true);
+    setShowSidebar(true);}
+    else{
+      navigate("/login");
+    }
      // Show the sidebar
   };
+
+  const handleLogin = () => {
+    navigate("/login");
+  }
 
 
   const handleEnrollPage = () => {
@@ -427,6 +450,11 @@ const LandingPage = () => {
             <li><Link to="/contactus">Contact</Link></li>
           </ul>
           </div>
+          <div className="avatar-container">
+            { customerDetails ? 
+            (
+              <>
+          <span className="avatar-customer-name">{customerDetails  ? customerDetails.name : "Login"}</span>
           <Dropdown>
             <Dropdown.Toggle as="img" src={avatar} alt="Avatar" roundedCircle style={{ width: "40px", cursor: "pointer" }} />
             <Dropdown.Menu>
@@ -435,6 +463,11 @@ const LandingPage = () => {
               <Dropdown.Item href="/contactus">Help</Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
+          </>
+            ): (
+              <button className="login-btn" onClick={handleLogin}>Login</button>
+            )}
+          </div>
         </div>
       </nav>
 
@@ -462,27 +495,40 @@ const LandingPage = () => {
           <div className="dummy-card" />
 
           {/* Actual service cards */}
-          {filteredServices.length > 0
-            ? filteredServices.map((service, index) => (
-                <div
-                  key={service.service_name}
-                  ref={(el) => (serviceCardsRef.current[index] = el)}
-                  className="customer-service-card"
-                >
-                  <img
-                    src={enroll_logo}
-                    alt={service.service_name}
-                  />
-                  <h5>{service.service_name}</h5>
-                  <button className="enroll-btn" onClick={() => handleEnrollService(service)}>Enroll</button>
-                </div>
-              ))
-            :  (
-              <div className="customer-plan-card" style={{width: '50%'}}>
+          {customerDetails ? (
+            filteredServices.length > 0 ? (
+             filteredServices.map((service, index) => (
+               <div
+                 key={service.service_name}
+                 ref={(el) => (serviceCardsRef.current[index] = el)}
+                 className="customer-service-card"
+               >
+                 <img src={enroll_logo} alt={service.service_name} />
+                 <h5>{service.service_name}</h5>
+                 <button className="enroll-btn" onClick={() => handleEnrollService(service)}>Enroll</button>
+               </div>
+             ))
+             ) : (
+                       <div className="customer-plan-card" style={{width: '50%'}}>
                         <h5 className="service-name">All Services Availed!</h5>
-                         
+                       </div>
+                )
+             ) : (
+                    
+                      availableServices.map((service, index) => (
+                        <div
+                        key={service.service_name}
+                        ref={(el) => (serviceCardsRef.current[index] = el)}
+                        className="customer-service-card"
+                      >
+                        <img src={enroll_logo} alt={service.service_name} />
+                        <h5>{service.service_name}</h5>
+                        <button className="enroll-btn" onClick={() => handleEnrollService(service)}>Enroll</button>
                       </div>
-            )}
+                      ))
+                    
+)}
+
 
           {/* Dummy card at the end */}
           <div className="dummy-card" />
@@ -501,10 +547,10 @@ const LandingPage = () => {
 
 
       {/* Customer's Services */}
-      <div ref = {ConfigSectionRef}>
+      {customerDetails && (<div ref = {ConfigSectionRef}>
       <div className="customer-services">
         <h4>Your Services</h4>
-        <div className="service-cards">
+        <div className="service-cards" style={{maxHeight:'450px'}}>
           {customerDetails && customerDetails.services_enrolled.length > 0
             ? customerDetails.services_enrolled.map((service) => (
                 <div key={service.service_name} className="customer-plan-card">
@@ -512,9 +558,17 @@ const LandingPage = () => {
                   <span className={`plan-name ${service.plan.toLowerCase()}`}>
             {service.plan}
           </span>
-          <p className="features">
-            Features: {service.features}
-          </p>
+          <div className="features">
+  <ul>
+    {service.features
+      .split(";")
+      .map((feature) => feature.trim())  // Trim each feature
+      .filter((feature) => feature)      // Filter out empty features
+      .map((feature, index) => (
+        <li key={index}>{feature}</li>
+      ))}
+  </ul>
+</div>
           <button className="enroll-btn" onClick={() => handleSettingsClick(service)}>
                   Settings
                 </button>
@@ -529,7 +583,7 @@ const LandingPage = () => {
             )}
         </div>
       </div>
-      </div>
+      </div>)}
 
       {ConfigsidebarOpen && (
         <Configuresidebar
@@ -539,7 +593,7 @@ const LandingPage = () => {
         />
       )}
 
-<div  className="customer-services">
+{customerDetails && (<div  className="customer-services">
   <h4>Your Requests</h4>
   <div className="service-cards">
     {requests ? (
@@ -568,7 +622,8 @@ const LandingPage = () => {
       <p>Loading customer details...</p>
     )}
   </div>
-</div>
+</div>)}
+<Footer />
 
     </>
   );
