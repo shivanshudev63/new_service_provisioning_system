@@ -14,7 +14,7 @@ const AvailableServices = () => {
     useEffect(() => {
         const fetchServices = async () => {
             try {
-                const response = await axios.get('http://localhost:8081/getservices');
+                const response = await axios.get('http://44.202.105.5:8081/getservices');
                 setServices(response.data);
             } catch (error) {
                 console.error('Error fetching services:', error);
@@ -35,12 +35,12 @@ const AvailableServices = () => {
 
             console.log('Sending update request with plans:', requestData);
 
-            const response = await axios.put(`http://localhost:8081/updateservice/${id}`, requestData);
+            const response = await axios.put(`http://44.202.105.5:8081/updateservice/${id}`, requestData);
             setShowModal(false);
             console.log('Update response:', response.data);
             alert('Service plans updated successfully');
 
-            const refreshResponse = await axios.get('http://localhost:8081/getservices');
+            const refreshResponse = await axios.get('http://44.202.105.5:8081/getservices');
             setServices(refreshResponse.data);
         } catch (error) {
             console.error('Error updating service plans:', error);
@@ -50,8 +50,8 @@ const AvailableServices = () => {
     const handleDeleteService = async (id) => {
         console.log('Deleting service with id:', id); // Log the service ID for debugging
         try {
-            await axios.delete(`http://localhost:8081/deleteservice/${id}`);
-            const response = await axios.get('http://localhost:8081/getservices');
+            await axios.delete(`http://44.202.105.5:8081/deleteservice/${id}`);
+            const response = await axios.get('http://44.202.105.5:8081/getservices');
             setServices(response.data);
         } catch (error) {
             console.error('Error deleting service:', error); // Log any errors

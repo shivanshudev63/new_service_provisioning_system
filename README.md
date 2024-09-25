@@ -23,3 +23,6 @@ username: shivanshudev
 password: Itone@123
 
 docker build --no-cache -t backend .
+ sudo docker run -p 3000:80 frontend:latest
+
+sudo docker run -p 8081:8081 -e NODE_ENV=production -e DB_HOST=host.docker.internal backend:latest

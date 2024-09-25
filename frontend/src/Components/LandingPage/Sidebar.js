@@ -13,14 +13,14 @@ const Sidebar = ({ service, customerId, closeSidebar }) => {
     if (service) {
       const service_id = service.id;
       axios
-        .get(`http://localhost:8081/plans/${service_id}`)
+        .get(`http://44.202.105.5:8081/plans/${service_id}`)
         .then((planRes) => {
           console.log(planRes);
           setPlans(planRes.data);
         })
         .catch((err) => console.log("Error fetching plans:", err));
 
-        axios.get(`http://localhost:8081/plans/${selectedPlan}/service/${service_id}`)
+        axios.get(`http://44.202.105.5:8081/plans/${selectedPlan}/service/${service_id}`)
     .then(res => setFeatures(res.data.features))
     .catch(err => console.log("Error fetching plan features:", err));
     }
@@ -33,7 +33,7 @@ const Sidebar = ({ service, customerId, closeSidebar }) => {
 
     // Fetch features for the selected plan
     axios
-      .get(`http://localhost:8081/plans/${plan_name}`)
+      .get(`http://44.202.105.5:8081/plans/${plan_name}`)
       .then((res) => setFeatures(res.data.features))
       .catch((err) => console.log("Error fetching plan features:", err));
   };
@@ -51,7 +51,7 @@ const Sidebar = ({ service, customerId, closeSidebar }) => {
     };
 
     axios
-      .post("http://localhost:8081/requests", newService)
+      .post("http://44.202.105.5:8081/requests", newService)
       .then((res) => {
         if (res.data.Status === "Success") {
           setShowModal(true);

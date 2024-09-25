@@ -20,7 +20,7 @@ const Login = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    axios.post('http://localhost:8081/login', formData)
+    axios.post('http://44.202.105.5:8081/login', formData)
       .then(res => {
         console.log(res.data)
         if (res.data.Status === "Success") {

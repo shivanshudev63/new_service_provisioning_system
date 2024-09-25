@@ -19,14 +19,14 @@ const Terminate = () => {
 
   useEffect(() => {
     // Check if the user is authenticated
-    axios.get('http://localhost:8081')
+    axios.get('http://44.202.105.5:8081')
       .then(res => {
         if (res.data.Status === "Success") {
           setAuth(true);
           setName(res.data.name);
 
           // Fetch enrolled services for the customer
-          axios.get(`http://localhost:8081/customer/${customer_id}`)
+          axios.get(`http://44.202.105.5:8081/customer/${customer_id}`)
             .then(serviceRes => setServices(serviceRes.data.services_enrolled))
             .catch(err => console.log("Error fetching services:", err));
         } else {
@@ -68,7 +68,7 @@ const Terminate = () => {
       feedback: feedback // Include feedback in the request
     };
     
-    axios.post('http://localhost:8081/requests', terminationRequest)
+    axios.post('http://44.202.105.5:8081/requests', terminationRequest)
     .then(res => {
       
       if (res.data.Status === "Success") {
@@ -83,12 +83,12 @@ const Terminate = () => {
       alert('An error occurred while sending the termination request.');
     });
     // Send required data to the API
-    // axios.post('http://localhost:8081/archive', {
+    // axios.post('http://44.202.105.5:8081/archive', {
     //   customer_id: customer_id,
     //   service_id: serviceToTerminate.service_id // Use correct field for service ID
     // })
     // .then(() => {
-    //   axios.delete(`http://localhost:8081/customer-services/${selectedService}`)
+    //   axios.delete(`http://44.202.105.5:8081/customer-services/${selectedService}`)
     //     .then(res => {
     //       if (res.data.Status === "Service deleted successfully") {
     //         alert('Service terminated successfully.');

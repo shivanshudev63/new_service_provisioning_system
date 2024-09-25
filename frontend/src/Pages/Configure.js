@@ -23,18 +23,18 @@ const Configure = () => {
 
   useEffect(() => {
     // Check if the user is authenticated
-    axios.get('http://localhost:8081')
+    axios.get('http://44.202.105.5:8081')
       .then(res => {
         if (res.data.Status === "Success") {
           setAuth(true);
           setName(res.data.name);
 
           // Fetch available services and plans
-          axios.get(`http://localhost:8081/services/${customer_id}`)
+          axios.get(`http://44.202.105.5:8081/services/${customer_id}`)
             .then(serviceRes => setServices(serviceRes.data))
             .catch(err => console.log("Error fetching services:", err));
 
-          axios.get('http://localhost:8081/plans')
+          axios.get('http://44.202.105.5:8081/plans')
             .then(planRes => {
               const order = ['basic', 'pro', 'pro-plus', 'premium']; // Define the order of plans
               const sortedPlans = planRes.data.sort((a, b) => {
@@ -65,7 +65,7 @@ const Configure = () => {
     setSelectedService(serviceId);
 
     // Fetch the current plan for the selected service
-    axios.get(`http://localhost:8081/customer-service/${customer_id}/service/${serviceId}`)
+    axios.get(`http://44.202.105.5:8081/customer-service/${customer_id}/service/${serviceId}`)
       .then(res => setCurrentPlan(res.data.plan_name))
       .catch(err => console.log("Error fetching current plan:", err));
   };
@@ -79,7 +79,7 @@ const Configure = () => {
  // Fetch features for a plan
 const fetchPlanFeatures = async (planId, serviceId) => {
   try {
-    const res = await axios.get(`http://localhost:8081/plans/${planId}/service/${serviceId}`);
+    const res = await axios.get(`http://44.202.105.5:8081/plans/${planId}/service/${serviceId}`);
     
     console.log('API Response:', res); // Log the full API response
     
@@ -137,7 +137,7 @@ const handleSubmit = async (event) => {
 
   console.log('Updated Service Payload:', updatedService); // Log the payload being sent
 console.log(updatedService.features)
-axios.post('http://localhost:8081/requests', updatedService)
+axios.post('http://44.202.105.5:8081/requests', updatedService)
 .then(res => {
   if (res.data.Status === "Success") {
     alert('Request sent to the admin successfully!');
@@ -151,7 +151,7 @@ axios.post('http://localhost:8081/requests', updatedService)
   alert('An error occurred while sending the request.');
 });
 
-  // axios.put('http://localhost:8081/customer-service/update', updatedService)
+  // axios.put('http://44.202.105.5:8081/customer-service/update', updatedService)
   //   .then(res => {
   //     if (res.data.Status === "Success") {
   //       alert('Service updated successfully!');

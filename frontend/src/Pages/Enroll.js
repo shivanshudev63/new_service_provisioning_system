@@ -22,18 +22,18 @@ const Configure = () => {
 
   useEffect(() => {
     // Check if the user is authenticated
-    axios.get('http://localhost:8081')
+    axios.get('http://44.202.105.5:8081')
       .then(res => {
         if (res.data.Status === "Success") {
           setAuth(true);
           setName(res.data.name);
 
           // Fetch available services and plans
-          axios.get('http://localhost:8081/services')
+          axios.get('http://44.202.105.5:8081/services')
             .then(serviceRes => setServices(serviceRes.data))
             .catch(err => console.log("Error fetching services:", err));
 
-            axios.get('http://localhost:8081/plans')
+            axios.get('http://44.202.105.5:8081/plans')
             .then(planRes => {
               // Filter out duplicate plans based on plan_name
               const uniquePlans = planRes.data.reduce((acc, plan) => {
@@ -71,7 +71,7 @@ const Configure = () => {
     setSelectedPlan(selectedPlan);
 
     // Fetch the features for the selected plan
-    axios.get(`http://localhost:8081/plans/${selectedPlan}`)
+    axios.get(`http://44.202.105.5:8081/plans/${selectedPlan}`)
       .then(res => setFeatures(res.data.features))
       .catch(err => console.log("Error fetching plan features:", err));
   };
@@ -87,7 +87,7 @@ const Configure = () => {
       request_type:'creation'
     };
 console.log(newService);
-axios.post('http://localhost:8081/requests', newService)
+axios.post('http://44.202.105.5:8081/requests', newService)
 .then(res => {
   if (res.data.Status === "Success") {
     alert('Request sent successfully! Awaiting admin approval.');

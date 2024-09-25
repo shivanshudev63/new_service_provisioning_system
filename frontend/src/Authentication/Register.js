@@ -24,7 +24,7 @@ const Register = () => {
       return;
     }
   
-    axios.post('http://localhost:8081/register', formData)
+    axios.post('http://44.202.105.5:8081/register', formData)
       .then(res => {
         if (res.data.Status === "Success") {
           navigate('/login');

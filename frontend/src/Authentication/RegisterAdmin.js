@@ -17,7 +17,7 @@ const RegisterAdmin = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
     // Handle form submission logic here, e.g., send data to an API
-    axios.post('http://localhost:8081/register', formData)
+    axios.post('http://44.202.105.5:8081/register', formData)
       .then(res => {
         if (res.data.Status === "Success") {
           navigate('/login');

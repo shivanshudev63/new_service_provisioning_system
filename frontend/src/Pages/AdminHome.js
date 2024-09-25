@@ -24,7 +24,7 @@
 
 //   useEffect(() => {
 //     // Fetch customers
-//     axios.get('http://localhost:8081/customers')
+//     axios.get('http://44.202.105.5:8081/customers')
 //       .then(res => {
 //         if (Array.isArray(res.data)) {
 //           setCustomers(res.data);
@@ -36,7 +36,7 @@
 //       .catch(err => console.error("Error fetching customers:", err));
 
 //     // Fetch service requests
-//     axios.get('http://localhost:8081/requests')
+//     axios.get('http://44.202.105.5:8081/requests')
 //       .then(res => {
 //         if (Array.isArray(res.data)) {
 //           setRequests(res.data);
@@ -49,7 +49,7 @@
 //   }, []);
 
 //   const handleLogout = () => {
-//     axios.get('http://localhost:8081/logout')
+//     axios.get('http://44.202.105.5:8081/logout')
 //       .then(res => {
 //         if (res.data.Status === "Success") {
 //           setAuth(false);
@@ -62,7 +62,7 @@
 //   };
 
 //   const viewCustomerDetails = (id) => {
-//     axios.get(`http://localhost:8081/customer/${id}`)
+//     axios.get(`http://44.202.105.5:8081/customer/${id}`)
 //       .then(res => {
 //         if (res.data) {
 //           setSelectedCustomer(res.data);
@@ -72,7 +72,7 @@
 //   };
 
 //   const removeCustomer = (id) => {
-//     axios.delete(`http://localhost:8081/customer/${id}`)
+//     axios.delete(`http://44.202.105.5:8081/customer/${id}`)
 //       .then(res => {
 //         if (res.data.Status === "Customer removed successfully") {
 //           setCustomers(customers.filter(customer => customer.id !== id));
@@ -83,7 +83,7 @@
 //   };
 
 //   const approveRequest = (id) => {
-//     axios.post(`http://localhost:8081/approve-request/${id}`)
+//     axios.post(`http://44.202.105.5:8081/approve-request/${id}`)
 //       .then(res => {
 //         if (res.data.Status === "Success") {
 //           alert('Request approved successfully!');
@@ -96,7 +96,7 @@
 //   };
 
 //   const rejectRequest = (id) => {
-//     axios.delete(`http://localhost:8081/requests/${id}`)
+//     axios.delete(`http://44.202.105.5:8081/requests/${id}`)
 //       .then(res => {
 //         if (res.data.Status === "Request deleted successfully") {
 //           alert('Request rejected successfully!');
@@ -278,7 +278,7 @@ const AdminHome = () => {
 
   useEffect(() => {
     // Fetch customers
-    axios.get('http://localhost:8081/customers')
+    axios.get('http://44.202.105.5:8081/customers')
       .then(res => {
         if (Array.isArray(res.data)) {
           setCustomers(res.data);
@@ -290,7 +290,7 @@ const AdminHome = () => {
       .catch(err => console.error("Error fetching customers:", err));
 
     // Fetch service requests
-    axios.get('http://localhost:8081/requests')
+    axios.get('http://44.202.105.5:8081/requests')
       .then(res => {
         if (Array.isArray(res.data)) {
           setRequests(res.data);
@@ -304,7 +304,7 @@ const AdminHome = () => {
       .catch(err => console.error("Error fetching service requests:", err));
 
       // const interval = setInterval(() => {
-      //   axios.get('http://localhost:8081/requests')
+      //   axios.get('http://44.202.105.5:8081/requests')
       //     .then(res => {
       //       if (Array.isArray(res.data)) {
       //         const newRequests = res.data.length - requests.length;
@@ -321,7 +321,7 @@ const AdminHome = () => {
   }, []);
 
   const handleLogout = () => {
-    axios.get('http://localhost:8081/logout')
+    axios.get('http://44.202.105.5:8081/logout')
       .then(res => {
         if (res.data.Status === "Success") {
           setAuth(false);
@@ -338,7 +338,7 @@ const AdminHome = () => {
   }
 
   const viewCustomerDetails = (id) => {
-    axios.get(`http://localhost:8081/customer/${id}`)
+    axios.get(`http://44.202.105.5:8081/customer/${id}`)
       .then(res => {
         if (res.data) {
           setSelectedCustomer(res.data);
@@ -348,7 +348,7 @@ const AdminHome = () => {
   };
 
   const removeCustomer = (id) => {
-    axios.delete(`http://localhost:8081/customer/${id}`)
+    axios.delete(`http://44.202.105.5:8081/customer/${id}`)
       .then(res => {
         if (res.data.Status === "Customer removed successfully") {
           setCustomers(customers.filter(customer => customer.id !== id));
@@ -359,7 +359,7 @@ const AdminHome = () => {
   };
 
   const approveRequest = (id) => {
-    axios.post(`http://localhost:8081/approve-request/${id}`)
+    axios.post(`http://44.202.105.5:8081/approve-request/${id}`)
       .then(res => {
         if (res.data.Status === "Success") {
           alert('Request approved successfully!');
@@ -372,7 +372,7 @@ const AdminHome = () => {
   };
 
   const rejectRequest = (id) => {
-    axios.delete(`http://localhost:8081/requests/${id}`)
+    axios.delete(`http://44.202.105.5:8081/requests/${id}`)
       .then(res => {
         if (res.data.Status === "Request deleted successfully") {
           alert('Request rejected successfully!');

@@ -4,7 +4,7 @@ const config = {
     database: 'sps',
     username: 'root',
     password: 'Itone@123',
-    host: 'localhost',
+    host: '44.202.105.5',
     dialect: 'mysql'
   },
   test: {
