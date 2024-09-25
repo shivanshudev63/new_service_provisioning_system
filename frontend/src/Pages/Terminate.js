@@ -9,6 +9,8 @@ const Terminate = () => {
   const [name, setName] = useState('');
   const [services, setServices] = useState([]);
   const [selectedService, setSelectedService] = useState('');
+  const [rating, setRating] = useState(0); // State for star rating
+  const [feedback, setFeedback] = useState(''); // State for feedback
   const navigate = useNavigate();
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
@@ -44,7 +46,9 @@ const Terminate = () => {
   const handleServiceChange = (event) => {
     setSelectedService(event.target.value);
   };
-
+  const handleRatingChange = (ratingValue) => {
+    setRating(ratingValue);
+  };
   const handleTerminate = () => {
     if (!selectedService) {
       alert('Please select a service to terminate.');
@@ -59,7 +63,9 @@ const Terminate = () => {
       plan: serviceToTerminate.plan,
       features:serviceToTerminate.features,
       request_type: 'termination',
-      status:'termination' // Pass the plan of the service
+      status:'termination' ,// Pass the plan of the service
+      rating: rating, // Include rating in the request
+      feedback: feedback // Include feedback in the request
     };
     
     axios.post('http://localhost:8081/requests', terminationRequest)
@@ -119,6 +125,28 @@ const Terminate = () => {
                 </option>
               ))}
             </select>
+            <div className="star-rating">
+              {[...Array(5)].map((star, index) => (
+                <span
+                  key={index}
+                  onClick={() => handleRatingChange(index + 1)} // Set rating value on click
+                  style={{ color: index < rating ? "#ffc107" : "#e4e5e9", fontSize: "30px", cursor: 'pointer' }}
+                >
+                  ★
+                </span>
+              ))}
+            </div>
+            <p>{rating > 0 ? `You rated ${rating} star(s)` : 'Rate the service'}</p>
+
+            {/* Feedback Text Input */}
+            <textarea
+              placeholder="Write your feedback..."
+              value={feedback}
+              onChange={(e) => setFeedback(e.target.value)}
+              rows="4"
+              cols="50"
+              style={{ marginTop: '10px', width: '100%', padding: '10px' }}
+            ></textarea>
             <button onClick={handleTerminate}>Terminate Service</button>
 
           </div>

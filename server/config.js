@@ -1,16 +1,16 @@
 // config.js
 const config = {
   development: {
-    database: 'telsps',
+    database: 'sps',
     username: 'root',
-    password: '12345',
+    password: 'Itone@123',
     host: 'localhost',
     dialect: 'mysql'
   },
   test: {
     database: 'test_db',
     username: 'root',
-    password: '12345',
+    password: 'Itone@123',
     host: 'localhost',
     dialect: "mysql",
     storage: ":memory:"
@@ -18,7 +18,7 @@ const config = {
   production: {
     database: 'sps_prod',
     username: 'root',
-    password: '12345',
+    password: 'Itone@123',
     host: 'localhost',
     dialect: 'mysql'
   }

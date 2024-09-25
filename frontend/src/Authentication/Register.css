@@ -1,116 +1,261 @@
-.register-container {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    height: 100vh;
-    background-color: rgb(249, 242, 242);
-    /* background-image: url('../../public/bg_image.png'); */
-    background-attachment: fixed;
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center;
-}
 
-.logo-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 40px;
-}
-
-.logo {
-    width: 100px; /* Adjust size as needed */
-    height: auto;
-}
-
-.title {
-    color: black;
-    font-size: 36px;
-    font-weight: bold;
-    margin-top: 10px;
-}
-
-.register-box {
-    background: rgba(255,255,255,0.15);
-    -webkit-backdrop-filter: blur(7px);
-    backdrop-filter: blur(7px);
-    border: 1px solid rgba(255,255,255,0.075);
-    padding: 40px;
-    border-radius: 12px;
-    margin-right: 69px;
-    height: 60%;
-    width: 29%;
-    text-align: center;
-    box-shadow: 0px 0px 20px black;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
     
+    .register-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        height: 100vh;
+        background: rgb(249, 242, 242);
+        /* background-image: url('../../public/bg_image.png'); */
+        background-attachment: fixed;  /* Make background img fixed */
+        background-repeat: no-repeat;  /* Don't repeat the img */
+        background-size: cover; /* Cover the entire screen */
+        background-position: center;
+      }
+      
+      .register-box {
+        background: rgba(255,255,255,0.15);
+        -webkit-backdrop-filter: blur(7px);
+        backdrop-filter: blur(7px);
+        border: 1px solid rgba(255,255,255,0.075);
+        padding: 40px;
+        padding-top: 0px;
+        border-radius: 12px;
+        margin-right: 69px;
+        height: 70%;
+        width: 29%;
+        text-align: center;
+        box-shadow: 0px 0px 20px black;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        
+      
+      }
+    
+      .register-box h2{
+        color: #36454F;
+        font-size: 35px;
+        font-weight: bold;
+        margin-bottom: 1rem;
+      }
+      
+      .logo-container {
+        margin-bottom: 20px;
+        width: 63%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        
+      }
+      
+      .logo {
+        width: 400px;
+        /* box-shadow: 8px 76px 139px -24px black; */
+        /* border-radius: 139px; */
+      }
+      
+      .title {
+        font-size: 43px;
+        margin-bottom: 10px;
+        color: black;
+      }
+      
+      .subtitle {
+        font-size: 18px;
+        margin-bottom: 30px;
+      }
+      
+      .register-form{
+        width: 47vh;
+      }
+      
+      
+      .register-form .register-form-group {
+        height: 23%;
+        position: relative;
+      }
+    
+      .register-form-group .input-icon {
+        position: absolute;
+        /* left: 3px; */
+        padding:11px;
+        top: 38%;
+        transform: translateY(-50%);
+        color: #5b5a5a;
+       
+      }
+     
+      
+      .form-input {
+        width: 84%;
+        padding: 10px 10px 10px 40px;
+        font-size: 16px;
+        border-radius: 5px;
+        border: 1px solid white;
+        background-color: rgb(223 237 235);
+        
+        color: black;
+      }
+    
+      ::placeholder {
+        color: black;
+        opacity: 0.85; /* Firefox */
+      }
 
-}
-
-.register-box h2 {
-    color: black;
-    font-size: 30px;
-    font-weight: bold;
-}
-
-.register-form .form-group {
-    margin-bottom: 17px;
-}
-
-.register-form label {
-    display: block;
-    color: black;
-    font-size: 18px;
-    margin-bottom: 8px;
-}
-
-.register-form input {
-    width: 75%;
-    padding: 10px;
-    font-size: 16px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-}
-
-.register-button, .login-button {
-    /* background-color: #e18c30;
-    color: white;
-    border: none;
-    padding: 15px 30px;
-    font-size: 15px;
-    font-weight: bold;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 4px;
-    transition: all 0.3s ease; */
-    background-color: rgb(24 108 204);
-    color: #fff;
-    border: none;
-    padding: 15px 30px;
-    font-size: 14px;
-    font-style: bold;
-    border-radius: 5px;
-    cursor: pointer;
-    width: 82%;
-    transition: all 0.3s ease;
+.register-button {
+    background-image: linear-gradient(
+    35deg,
+    hsl(202deg 83% 52%) 0%,
+    hsl(207deg 71% 59%) 10%,
+    hsl(211deg 60% 62%) 19%,
+    hsl(216deg 48% 63%) 25%,
+    hsl(223deg 37% 65%) 31%,
+    hsl(236deg 25% 65%) 36%,
+    hsl(258deg 19% 64%) 40%,
+    hsl(287deg 15% 61%) 44%,
+    hsl(319deg 17% 61%) 47%,
+    hsl(336deg 24% 62%) 51%,
+    hsl(347deg 30% 63%) 54%,
+    hsl(354deg 36% 63%) 56%,
+    hsl(359deg 41% 64%) 59%,
+    hsl(3deg 48% 64%) 62%,
+    hsl(5deg 55% 63%) 64%,
+    hsl(7deg 61% 62%) 67%,
+    hsl(9deg 67% 62%) 69%,
+    hsl(10deg 72% 61%) 72%,
+    hsl(11deg 77% 60%) 75%,
+    hsl(12deg 82% 59%) 78%,
+    hsl(12deg 86% 58%) 81%,
+    hsl(13deg 90% 57%) 84%,
+    hsl(14deg 94% 55%) 88%,
+    hsl(15deg 97% 53%) 94%,
+    hsl(17deg 100% 50%) 100%
+  );
+      color: white;
+      border: none;
+      padding:8px 21px;
+      font-size: 20px;
+      font-weight: bold;
+    
+      cursor: pointer;
+      width: 85%;
+      margin-bottom: 20px;
+      transition: all 0.3s ease;
     
 }
 
-.register-button:hover, .login-button:hover {
-    background-color: #ff7700;
-    box-shadow: 0px 0px 5px #ff9900;
+.register-button:hover, .register-button:hover {
+    box-shadow: 0px 0px 20px grey;
 }
 
 .login-button {
-    background-color: rgb(24 108 204);
-    margin-top: 10px;
+    color: transparent; /* Hide original text color */
+      background-color: white; /* Keep the background white */
+      background-image: linear-gradient(
+          35deg,
+          hsl(202deg 83% 52%) 0%,
+          hsl(207deg 71% 59%) 10%,
+          hsl(211deg 60% 62%) 19%,
+          hsl(216deg 48% 63%) 25%,
+          hsl(223deg 37% 65%) 31%,
+          hsl(236deg 25% 65%) 36%,
+          hsl(258deg 19% 64%) 40%,
+          hsl(287deg 15% 61%) 44%,
+          hsl(319deg 17% 61%) 47%,
+          hsl(336deg 24% 62%) 51%,
+          hsl(347deg 30% 63%) 54%,
+          hsl(354deg 36% 63%) 56%,
+          hsl(359deg 41% 64%) 59%,
+          hsl(3deg 48% 64%) 62%,
+          hsl(5deg 55% 63%) 64%,
+          hsl(7deg 61% 62%) 67%,
+          hsl(9deg 67% 62%) 69%,
+          hsl(10deg 72% 61%) 72%,
+          hsl(11deg 77% 60%) 75%,
+          hsl(12deg 82% 59%) 78%,
+          hsl(12deg 86% 58%) 81%,
+          hsl(13deg 90% 57%) 84%,
+          hsl(14deg 94% 55%) 88%,
+          hsl(15deg 97% 53%) 94%,
+          hsl(17deg 100% 50%) 100%
+      );
+      -webkit-background-clip: text; /* For Safari/Chrome */
+      background-clip: text; /* For other browsers */
+      
+      border: 4px solid transparent; /* Create border */
+      border-image: linear-gradient(
+          35deg,
+          hsl(202deg 83% 52%) 0%,
+          hsl(207deg 71% 59%) 10%,
+          hsl(211deg 60% 62%) 19%,
+          hsl(216deg 48% 63%) 25%,
+          hsl(223deg 37% 65%) 31%,
+          hsl(236deg 25% 65%) 36%,
+          hsl(258deg 19% 64%) 40%,
+          hsl(287deg 15% 61%) 44%,
+          hsl(319deg 17% 61%) 47%,
+          hsl(336deg 24% 62%) 51%,
+          hsl(347deg 30% 63%) 54%,
+          hsl(354deg 36% 63%) 56%,
+          hsl(359deg 41% 64%) 59%,
+          hsl(3deg 48% 64%) 62%,
+          hsl(5deg 55% 63%) 64%,
+          hsl(7deg 61% 62%) 67%,
+          hsl(9deg 67% 62%) 69%,
+          hsl(10deg 72% 61%) 72%,
+          hsl(11deg 77% 60%) 75%,
+          hsl(12deg 82% 59%) 78%,
+          hsl(12deg 86% 58%) 81%,
+          hsl(13deg 90% 57%) 84%,
+          hsl(14deg 94% 55%) 88%,
+          hsl(15deg 97% 53%) 94%,
+          hsl(17deg 100% 50%) 100%
+      );
+      border-image-slice: 1; /* Show gradient on the border */
+      
+      padding: 8px 21px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      width: 85%;
+      margin-bottom: 20px;
+      transition: all 0.3s ease;
 }
 
 .login-button:hover {
-    background-color: #0056b3;
+    color: white;
+    
+    background: linear-gradient(
+      35deg,
+      hsl(202deg 83% 52%) 0%,
+      hsl(207deg 71% 59%) 10%,
+      hsl(211deg 60% 62%) 19%,
+      hsl(216deg 48% 63%) 25%,
+      hsl(223deg 37% 65%) 31%,
+      hsl(236deg 25% 65%) 36%,
+      hsl(258deg 19% 64%) 40%,
+      hsl(287deg 15% 61%) 44%,
+      hsl(319deg 17% 61%) 47%,
+      hsl(336deg 24% 62%) 51%,
+      hsl(347deg 30% 63%) 54%,
+      hsl(354deg 36% 63%) 56%,
+      hsl(359deg 41% 64%) 59%,
+      hsl(3deg 48% 64%) 62%,
+      hsl(5deg 55% 63%) 64%,
+      hsl(7deg 61% 62%) 67%,
+      hsl(9deg 67% 62%) 69%,
+      hsl(10deg 72% 61%) 72%,
+      hsl(11deg 77% 60%) 75%,
+      hsl(12deg 82% 59%) 78%,
+      hsl(12deg 86% 58%) 81%,
+      hsl(13deg 90% 57%) 84%,
+      hsl(14deg 94% 55%) 88%,
+      hsl(15deg 97% 53%) 94%,
+      hsl(17deg 100% 50%) 100%
+    );
 }

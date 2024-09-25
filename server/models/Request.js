@@ -37,6 +37,10 @@ const Request = sequelize.define('Request', {
         type: DataTypes.STRING,
         allowNull: true, // Optional field
     },
+    rating: {
+        type: DataTypes.INTEGER,
+        allowNull: true, // Optional field
+    },
     status: {
         type: DataTypes.STRING,
         defaultValue: 'pending',

@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './Register.css';  // Import the CSS file for styling
 import companyLogo from './logo.png';  // Import the company logo
+import '@fortawesome/fontawesome-free/css/all.min.css';  // For FontAwesome icons
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -43,8 +44,10 @@ const Register = () => {
       <div className="register-box">
         <h2>Register</h2>
         <form onSubmit={handleSubmit} className="register-form">
-          <div className="form-group">
+          <div className="register-form-group">
             {/* <label>Name:</label> */}
+            <i className="fas fa-user input-icon"></i> {/* FontAwesome user icon */}
+             
             <input 
               type="text" 
               placeholder='Name'
@@ -56,11 +59,12 @@ const Register = () => {
             />
           </div>
 
-          <div className="form-group">
-            {/* <label>Email:</label> */}
+          <div className="register-form-group">
+          <i class="fa-solid fa-envelope input-icon"></i>
+
             <input 
               type="email" 
-              placeholder='email'
+              placeholder='Email'
               name="email" 
               value={formData.email}
               className="form-input" 
@@ -69,11 +73,13 @@ const Register = () => {
             />
           </div>
 
-          <div className="form-group">
-            {/* <label>Password:</label> */}
+          <div className="register-form-group">
+          
+            <i className="fas fa-lock input-icon"></i>  {/* FontAwesome lock icon */}
+
             <input 
               type="password" 
-              placeholder='password'
+              placeholder='Password'
               name="password" 
               value={formData.password} 
                className="form-input"
@@ -84,7 +90,7 @@ const Register = () => {
 
           <button type="submit" className="register-button">Register</button>
           <Link to="/login">
-            <button className="login-button">Already have an account? Login</button>
+            <button className="login-button">Have an account? Login</button>
           </Link>
         </form>
       </div>

@@ -22,6 +22,10 @@ const Archive = sequelize.define('Archive', {
         type: DataTypes.STRING,
         allowNull: true, // Optional field
     },
+    rating: {
+        type: DataTypes.INTEGER,
+        allowNull: true, // Optional field
+    },
     features: {
         type: DataTypes.TEXT,
         allowNull: true // Assuming features are optional

@@ -13,7 +13,7 @@ const Configuresidebar = ({ customerId, service, closeSidebar }) => {
   const [newPlan, setNewPlan] = useState(''); 
   const [feedback,setFeedback] = useState('');
   const [features, setFeatures] = useState("");
-
+  const [rating, setRating] = useState(0); 
 
   useEffect(() => {
     const fetchPlanDetails = async () => {
@@ -165,7 +165,8 @@ const Configuresidebar = ({ customerId, service, closeSidebar }) => {
       features: service.features,
       request_type: 'termination',
       status: 'termination',
-      feedback: feedback
+      feedback: feedback,
+      rating: rating,
     };
 
     try {
@@ -181,6 +182,25 @@ const Configuresidebar = ({ customerId, service, closeSidebar }) => {
       alert('An error occurred while sending the termination request.');
     }
   };
+  // Function to render stars for rating
+  const renderStars = () => {
+    return (
+      <div className="rating-stars">
+        {[1, 2, 3, 4, 5].map((star) => (
+          <span
+            key={star}
+            onClick={() => setRating(star)}
+            style={{ cursor: 'pointer', color: star <= rating ? 'gold' : 'gray', fontSize: '24px' }}
+          >
+            ★
+          </span>
+        ))}
+        
+      </div>
+      
+    );
+  };
+
 
   return (
     <div className="sidebar">
@@ -278,12 +298,18 @@ const Configuresidebar = ({ customerId, service, closeSidebar }) => {
 
       {/* Conditionally render feedback textbox for termination modal */}
       {modalType === 'termination' && (
+        <>
         <textarea
           placeholder="Please provide feedback(optional)"
           value={feedback}
           onChange={(e) => setFeedback(e.target.value)}
           style={{ width: '100%', height: '100px', marginTop: '10px' }}
         />
+        {/* Render rating stars */}
+        <h5>Rate your experience:</h5>
+                {renderStars()}
+
+</>        
       )}
 
       <div className="modal-actions">

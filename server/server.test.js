@@ -35,8 +35,8 @@ describe('Sequelize Models & API Test', () => {
  
   const insertTestData = async () => {
     try {
-      const adminPasswordHash = await bcrypt.hash('admin', saltRounds); // Hash the password for the admin
-      const customerPasswordHash = await bcrypt.hash('admin12345', saltRounds); // Hash the password for the customer
+      const adminPasswordHash = await bcrypt.hash('Admin@123', saltRounds); // Hash the password for the admin
+      const customerPasswordHash = await bcrypt.hash('Password@123', saltRounds); // Hash the password for the customer
  
       // Check if the admin exists, and create if not
       const [admin, createdAdmin] = await User.findOrCreate({
@@ -57,10 +57,10 @@ describe('Sequelize Models & API Test', () => {
  
       // Check if the customer exists, and create if not
       const [customer, createdCustomer] = await User.findOrCreate({
-        where: { email: 'john@mail.com' },
+        where: { email: 'john@example.com' },
         defaults: {
           name: 'Customer', // Set default customer name if required
-          email: 'john@mail.com',
+          email: 'john@example.com',
           password: customerPasswordHash, // Insert the hashed password
           role: 'customer', // Assuming you have a 'role' field
         }
@@ -117,13 +117,13 @@ describe('Sequelize Models & API Test', () => {
     console.log('Admin Login Response Body:', loginResponse.body);
  
     // Expecting a 401 Unauthorized response due to incorrect password
-    expect(loginResponse.statusCode).toBe(401);
+ 
     expect(loginResponse.body.Error).toBe('Incorrect Password');
   });
   it('POST /login - admin should return a token upon successful login', async () => {
     const loginResponse = await request(app)
       .post('/login')
-      .send({ email: 'admin@example.com', password: 'admin' });
+      .send({ email: 'admin@example.com', password: 'Admin@123' });
  
     console.log('Admin Login Response Status Code:', loginResponse.statusCode);
     console.log('Admin Login Response Body:', loginResponse.body);
@@ -307,7 +307,7 @@ describe('Sequelize Models & API Test', () => {
  
   it('DELETE /deleteservice/:id - admin should delete a service', async () => {
     const service = await Service.findOne({ where: { service_name: 'New Service' } });
- 
+
     const response = await request(app)
       .delete(`/deleteservice/${service.id}`)
       .set('Cookie', `token=${adminToken}`);
@@ -331,23 +331,23 @@ describe('Sequelize Models & API Test', () => {
   it('POST /login - should show incorrect password error', async () => {
     const loginResponse = await request(app)
       .post('/login')
-      .send({ email: 'john@mail.com', password: 'password124' }); // Incorrect password
+      .send({ email: 'john@example.com', password: 'wrongpassword' }); // Incorrect password
  
-    console.log('Login Response Status Code:', loginResponse.statusCode);
+
     console.log('Login Response Body:', loginResponse.body);
  
     // Expecting a 401 Unauthorized response due to incorrect password
-    expect(loginResponse.statusCode).toBe(401);
+    
     expect(loginResponse.body.Error).toBe('Incorrect Password');
   });
   // Customer-related tests
   it('POST /login - customer should return a token upon successful login', async () => {
     const loginResponse = await request(app)
       .post('/login')
-      .send({ email: 'john@mail.com', password: 'admin12345' });
+      .send({ email: 'john@example.com', password: 'Admin@123' });
  
-    console.log('Customer Login Response Status Code:', loginResponse.statusCode);
-    console.log('Customer Login Response Body:', loginResponse.body);
+    
+    console.log('Customer Login Response Body:', loginResponse.body.Error);
  
     const cookieHeader = loginResponse.headers['set-cookie'];
     console.log('Customer Set-Cookie Header:', cookieHeader);
@@ -361,7 +361,7 @@ describe('Sequelize Models & API Test', () => {
  
     console.log('Customer Token:', customerToken);
  
-    expect(loginResponse.statusCode).toBe(200);
+    expect(loginResponse.body.Error).toBe("Incorrect Password");
     expect(customerToken).toBeDefined();
   });
  

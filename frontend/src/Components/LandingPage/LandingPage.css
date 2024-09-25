@@ -1,9 +1,9 @@
 /* Navbar Styles */
 .custom-navbar {
-  background-color: #f8f9fa;
+  background-color: white;
   padding: 0px 20px 0px 20px;
-  border-radius: 10px;
-  box-shadow: 11px -2px 9px black;
+  box-shadow: 0 1px 20px rgba(125, 125, 125, 0.2);
+
 }
 
 .navbar-container {
@@ -12,7 +12,7 @@
   justify-content: space-between;
   width: 97%;
   margin: auto;
-  background: #f7f7fa;
+  background: white;
 }
 
 .navbar-left{
@@ -34,7 +34,8 @@
 
 
 .landing-logo {
-  width: 65px;
+  width: 50px;
+  margin: 0.5rem;
 }
 
 .nav-links {
@@ -298,7 +299,8 @@
 
 .custom-carousel {
   max-width: 80%; /* Adjust this value */
-  margin: 0 auto;
+  margin:  auto;
+  margin-top: 2rem;
 }
 
 .custom-carousel img {

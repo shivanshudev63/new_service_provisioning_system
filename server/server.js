@@ -94,6 +94,29 @@ const verifyAdmin = async (req, res, next) => {
 //   return res.json({ Status: "Success", name: req.name });
 // });
 
+const createAdmin = async () => {
+  try {
+      await sequelize.authenticate();
+
+      const hashedPassword = await bcrypt.hash('Admin@123', saltRounds);
+
+      await User.create({
+          name: 'Admin',
+          email: 'admin@example.com',
+          password: hashedPassword,
+          role: 'admin'
+      });
+
+      console.log("Admin user created successfully.");
+
+  } catch (err) {
+      console.error("Error creating admin user:", err);
+  } 
+};
+
+createAdmin();
+
+
 app.get("/", verifyUser, (req, res) => {
   return res.json({
     Status: "Success",
@@ -412,7 +435,7 @@ app.post("/customer-service/enroll", verifyUser, async (req, res) => {
 
 app.post("/requests", async (req, res) => {
   try {
-    const { customer_id, service_id, plan, request_type, feedback } = req.body;
+    const { customer_id, service_id, plan, request_type, feedback,rating } = req.body;
 
     const service = await Service.findByPk(service_id);
     const selectedPlan = await Plan.findOne({
@@ -432,11 +455,12 @@ app.post("/requests", async (req, res) => {
       plan,
       features: selectedPlan.features,
       request_type,
-      feedback
+      feedback,
+      rating
        // Optional: Add features if needed
     });
 
-    console.log(newRequest)
+   
 
     return res.json({
       Status: "Success",
@@ -515,7 +539,8 @@ app.post("/approve-request/:id", async (req, res) => {
         if (!name) {
           return res.status(404).json({ Error: "Customer ID not found" });
         }
-
+        const feedback = request.feedback || "No feedback provided"; // Optional feedback
+        const rating = request.rating || 0; // Rating (default 0 if not provided) 
         customer = await User.findByPk(request.customer_id);
         service1 = await Service.findByPk(request.service_id);
 
@@ -535,6 +560,8 @@ app.post("/approve-request/:id", async (req, res) => {
           service_id: request.service_id,
           plan_name: service.plan_name,
           features: service.features,
+          feedback: feedback, // Save feedback          
+          rating: rating, // Save rating
           terminated_at: new Date(),
         });
 

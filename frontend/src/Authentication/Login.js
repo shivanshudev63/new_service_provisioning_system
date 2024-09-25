@@ -47,7 +47,7 @@ const Login = () => {
         <h2>User Login</h2>
         <form onSubmit={handleSubmit} className="login-form">
           <div className="form-group">
-            <i className="fas fa-user input-icon"></i>  {/* FontAwesome user icon */}
+          <i class="fa-solid fa-envelope input-icon"></i>
             <input
               type="email"
               name="email"

@@ -23,7 +23,7 @@
       padding: 40px;
       border-radius: 12px;
       margin-right: 69px;
-      height: 60%;
+      height: 70%;
       width: 29%;
       text-align: center;
       box-shadow: 0px 0px 20px black;
@@ -36,9 +36,10 @@
     }
   
     .login-box h2{
-      color: black;
+      color: #36454F;
       font-size: 35px;
       font-weight: bold;
+      margin-bottom: 2rem;
     }
     
     .logo-container {
@@ -105,13 +106,40 @@
     }
     
     .submit-button {
-      background-color: #b247db;
+      background-image: linear-gradient(
+    35deg,
+    hsl(202deg 83% 52%) 0%,
+    hsl(207deg 71% 59%) 10%,
+    hsl(211deg 60% 62%) 19%,
+    hsl(216deg 48% 63%) 25%,
+    hsl(223deg 37% 65%) 31%,
+    hsl(236deg 25% 65%) 36%,
+    hsl(258deg 19% 64%) 40%,
+    hsl(287deg 15% 61%) 44%,
+    hsl(319deg 17% 61%) 47%,
+    hsl(336deg 24% 62%) 51%,
+    hsl(347deg 30% 63%) 54%,
+    hsl(354deg 36% 63%) 56%,
+    hsl(359deg 41% 64%) 59%,
+    hsl(3deg 48% 64%) 62%,
+    hsl(5deg 55% 63%) 64%,
+    hsl(7deg 61% 62%) 67%,
+    hsl(9deg 67% 62%) 69%,
+    hsl(10deg 72% 61%) 72%,
+    hsl(11deg 77% 60%) 75%,
+    hsl(12deg 82% 59%) 78%,
+    hsl(12deg 86% 58%) 81%,
+    hsl(13deg 90% 57%) 84%,
+    hsl(14deg 94% 55%) 88%,
+    hsl(15deg 97% 53%) 94%,
+    hsl(17deg 100% 50%) 100%
+  );
       color: white;
       border: none;
       padding:8px 21px;
       font-size: 20px;
       font-weight: bold;
-      border-radius: 5px;
+    
       cursor: pointer;
       width: 85%;
       margin-bottom: 20px;
@@ -119,8 +147,8 @@
     }
     
     .submit-button:hover {
-      background-color: #b300ff;
-      box-shadow: 0px 0px 15px #8f00ff;
+      
+      box-shadow: 0px 0px 20px grey;
     }
     
     .create-account-link {
@@ -129,21 +157,111 @@
     }
     
     .create-account-button {
-      background-color: rgb(24 108 204);
-      color: white;
-      border: none;
-      padding:8px 21px;
-      font-size: 20px;
+      color: transparent; /* Hide original text color */
+      background-color: white; /* Keep the background white */
+      background-image: linear-gradient(
+          35deg,
+          hsl(202deg 83% 52%) 0%,
+          hsl(207deg 71% 59%) 10%,
+          hsl(211deg 60% 62%) 19%,
+          hsl(216deg 48% 63%) 25%,
+          hsl(223deg 37% 65%) 31%,
+          hsl(236deg 25% 65%) 36%,
+          hsl(258deg 19% 64%) 40%,
+          hsl(287deg 15% 61%) 44%,
+          hsl(319deg 17% 61%) 47%,
+          hsl(336deg 24% 62%) 51%,
+          hsl(347deg 30% 63%) 54%,
+          hsl(354deg 36% 63%) 56%,
+          hsl(359deg 41% 64%) 59%,
+          hsl(3deg 48% 64%) 62%,
+          hsl(5deg 55% 63%) 64%,
+          hsl(7deg 61% 62%) 67%,
+          hsl(9deg 67% 62%) 69%,
+          hsl(10deg 72% 61%) 72%,
+          hsl(11deg 77% 60%) 75%,
+          hsl(12deg 82% 59%) 78%,
+          hsl(12deg 86% 58%) 81%,
+          hsl(13deg 90% 57%) 84%,
+          hsl(14deg 94% 55%) 88%,
+          hsl(15deg 97% 53%) 94%,
+          hsl(17deg 100% 50%) 100%
+      );
+      -webkit-background-clip: text; /* For Safari/Chrome */
+      background-clip: text; /* For other browsers */
+      
+      border: 4px solid transparent; /* Create border */
+      border-image: linear-gradient(
+          35deg,
+          hsl(202deg 83% 52%) 0%,
+          hsl(207deg 71% 59%) 10%,
+          hsl(211deg 60% 62%) 19%,
+          hsl(216deg 48% 63%) 25%,
+          hsl(223deg 37% 65%) 31%,
+          hsl(236deg 25% 65%) 36%,
+          hsl(258deg 19% 64%) 40%,
+          hsl(287deg 15% 61%) 44%,
+          hsl(319deg 17% 61%) 47%,
+          hsl(336deg 24% 62%) 51%,
+          hsl(347deg 30% 63%) 54%,
+          hsl(354deg 36% 63%) 56%,
+          hsl(359deg 41% 64%) 59%,
+          hsl(3deg 48% 64%) 62%,
+          hsl(5deg 55% 63%) 64%,
+          hsl(7deg 61% 62%) 67%,
+          hsl(9deg 67% 62%) 69%,
+          hsl(10deg 72% 61%) 72%,
+          hsl(11deg 77% 60%) 75%,
+          hsl(12deg 82% 59%) 78%,
+          hsl(12deg 86% 58%) 81%,
+          hsl(13deg 90% 57%) 84%,
+          hsl(14deg 94% 55%) 88%,
+          hsl(15deg 97% 53%) 94%,
+          hsl(17deg 100% 50%) 100%
+      );
+      border-image-slice: 1; /* Show gradient on the border */
+      
+      padding: 8px 21px;
+      font-size: 16px;
       font-weight: bold;
-      border-radius: 5px;
       cursor: pointer;
       width: 85%;
       margin-bottom: 20px;
       transition: all 0.3s ease;
-    }
+  }
+  
+  .create-account-button:hover {
+    color: white;
     
-    .create-account-button:hover {
-      background-color:  rgb(44, 142, 255);
-      box-shadow: 0px 0px 15px  rgb(10, 81, 163);;
-    }
-    
+    background: linear-gradient(
+      35deg,
+      hsl(202deg 83% 52%) 0%,
+      hsl(207deg 71% 59%) 10%,
+      hsl(211deg 60% 62%) 19%,
+      hsl(216deg 48% 63%) 25%,
+      hsl(223deg 37% 65%) 31%,
+      hsl(236deg 25% 65%) 36%,
+      hsl(258deg 19% 64%) 40%,
+      hsl(287deg 15% 61%) 44%,
+      hsl(319deg 17% 61%) 47%,
+      hsl(336deg 24% 62%) 51%,
+      hsl(347deg 30% 63%) 54%,
+      hsl(354deg 36% 63%) 56%,
+      hsl(359deg 41% 64%) 59%,
+      hsl(3deg 48% 64%) 62%,
+      hsl(5deg 55% 63%) 64%,
+      hsl(7deg 61% 62%) 67%,
+      hsl(9deg 67% 62%) 69%,
+      hsl(10deg 72% 61%) 72%,
+      hsl(11deg 77% 60%) 75%,
+      hsl(12deg 82% 59%) 78%,
+      hsl(12deg 86% 58%) 81%,
+      hsl(13deg 90% 57%) 84%,
+      hsl(14deg 94% 55%) 88%,
+      hsl(15deg 97% 53%) 94%,
+      hsl(17deg 100% 50%) 100%
+    );
+    box-shadow: 0px 0px 20px grey;
+
+  }
+  
