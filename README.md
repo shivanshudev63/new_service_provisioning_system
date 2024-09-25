@@ -13,3 +13,11 @@ sonar-scanner \
 
 username: admin
 password: databasepassword123
+
+
+cmd to connect : mysql -h database-1.ch5xfq1yvx7p.us-east-1.rds.amazonaws.com -P 3306 -u admin -p
+
+
+jenkin:
+username: shivanshudev
+password: Itone@123
