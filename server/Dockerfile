@@ -7,18 +7,14 @@ WORKDIR /usr/src/app
 # Copy package.json and package-lock.json
 COPY package*.json ./
 
-# Disable strict SSL checking (to handle self-signed certificates)
-RUN npm config set strict-ssl false
-# Set NODE_TLS_REJECT_UNAUTHORIZED to 0 to bypass SSL validation
-ENV NODE_TLS_REJECT_UNAUTHORIZED=0
-# Install dependencies
-RUN npm install
+# Disable strict SSL checking and install dependencies
+RUN npm config set strict-ssl false && npm install
 
-# Copy the application source code
+# Copy the rest of the application source code
 COPY . .
 
-# Expose the port the app runs on (assuming the server runs on port 8081)
+# Expose the port the app runs on
 EXPOSE 8081
 
-# Command to start the app
+# Start the application
 CMD ["npm", "start"]
