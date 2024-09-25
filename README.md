@@ -21,3 +21,5 @@ cmd to connect : mysql -h database-1.ch5xfq1yvx7p.us-east-1.rds.amazonaws.com -P
 jenkin:
 username: shivanshudev
 password: Itone@123
+
+docker build --no-cache -t backend .
