@@ -19,7 +19,7 @@
 
 //   useEffect(() => {
 //     // Fetch the authentication status and user details
-//     axios.get('http://44.202.105.5:8081')
+//     axios.get('http://54.175.148.241:8081')
 //       .then(res => {
 //         if (res.data.Status === "Success") {
 //           setAuth(true);
@@ -27,7 +27,7 @@
 
 //           // Fetch customer-specific data using the customer_id
 //           if (customer_id) {
-//             axios.get(`http://44.202.105.5:8081/customer/${customer_id}`)
+//             axios.get(`http://54.175.148.241:8081/customer/${customer_id}`)
 //               .then(customerRes => {
 //                 if (customerRes.data) {
 //                   setCustomerDetails(customerRes.data);
@@ -44,7 +44,7 @@
 //   }, [customer_id]);
   
 //   const handleLogout = () => {
-//     axios.get('http://44.202.105.5:8081/logout')
+//     axios.get('http://54.175.148.241:8081/logout')
 //       .then(res => {
 //         if (res.data.Status === "Success") {
 //           setAuth(false);

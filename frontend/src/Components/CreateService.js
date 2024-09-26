@@ -34,7 +34,7 @@ const CreateService = () => {
 
     const checkServiceExists = async (serviceName) => {
         try {
-            const response = await axios.get('http://44.202.105.5:8081/checkservice', {
+            const response = await axios.get('http://54.175.148.241:8081/checkservice', {
                 params: { service_name: serviceName }
             });
             return response.data.exists;
@@ -63,7 +63,7 @@ const CreateService = () => {
         }));
 
         try {
-            await axios.post('http://44.202.105.5:8081/createservice', {
+            await axios.post('http://54.175.148.241:8081/createservice', {
                 service_name: serviceName,
                 plans: processedPlans
             }, {

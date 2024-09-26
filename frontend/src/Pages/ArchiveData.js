@@ -13,7 +13,7 @@ const ArchiveTable = () => {
     // Fetch the archived data from the backend
     const fetchArchives = async () => {
       try {
-        const response = await axios.get("http://44.202.105.5:8081/archives");
+        const response = await axios.get("http://54.175.148.241:8081/archives");
         setArchives(response.data);
         console.log(response.data);
       } catch (error) {
