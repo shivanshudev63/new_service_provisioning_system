@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import './CreateService.css'; // Ensure this import is at the top of your file to use the styles
-
+import { useNavigate } from 'react-router-dom';
 const planTypes = [
     "basic",
     "pro",
@@ -10,6 +10,7 @@ const planTypes = [
 ];
 
 const CreateService = () => {
+    const navigate=useNavigate();
     axios.defaults.withCredentials = true;
     const [serviceName, setServiceName] = useState('');
     const [plans, setPlans] = useState([
@@ -72,7 +73,7 @@ const CreateService = () => {
             alert('Service created successfully');
             setServiceName('');
             setPlans([{ plan_name: planTypes[0], features: '' }]);
-            window.location.reload();
+            navigate("/adminhome")
         } catch (err) {
             console.error("Error creating service:", err);
             alert('An error occurred while creating the service.');
